@@ -12,7 +12,6 @@
         "husky": "^8.0.0"
     },
     "scripts": {
-        "prepare": "husky install",
-        "idk": "husky add .husky/commit-msg 'npx commitlint --edit $1'"
+        "prepare": "husky install"
     }
 }
