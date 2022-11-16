@@ -3,9 +3,10 @@ using LibGit2Sharp;
 namespace ShutUpHusky.Heuristics;
 
 public class TicketHeuristic : IHeuristic {
-    public HeuristicResult Analyse(IRepository _) =>
-        new() {
+    public HeuristicResult Analyse(IRepository repo) {
+        return new() {
             Priority = 10,
             Value = $"feat(rand-{(Math.Floor(new Random().NextDouble() * 9999))})",
         };
+    }
 }
