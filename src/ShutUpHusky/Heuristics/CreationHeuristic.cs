@@ -38,6 +38,7 @@ public class CreationHeuristic : IHeuristic {
         return new() {
             Priority = 1,
             Value = $"created {fileName}",
+            After = ", ",
         };
     }
 }

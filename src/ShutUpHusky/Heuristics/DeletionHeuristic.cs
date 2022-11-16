@@ -38,6 +38,7 @@ public class DeletionHeuristic : IHeuristic {
         return new() {
             Priority = 1,
             Value = $"deleted {fileName}",
+            After = ", ",
         };
     }
 }

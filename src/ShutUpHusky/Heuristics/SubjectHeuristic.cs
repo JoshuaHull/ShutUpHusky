@@ -42,6 +42,7 @@ public class SubjectHeuristic : IHeuristic {
         return new() {
             Priority = 1,
             Value = mostCommonTerm.Key,
+            After = " > ",
         };
     }
 }

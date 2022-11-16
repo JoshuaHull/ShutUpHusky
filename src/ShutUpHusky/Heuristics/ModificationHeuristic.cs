@@ -38,6 +38,7 @@ public class ModificationHeuristic : IHeuristic {
         return new() {
             Priority = 1,
             Value = $"updated {fileName}",
+            After = ", ",
         };
     }
 }
