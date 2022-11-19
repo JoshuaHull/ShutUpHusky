@@ -21,20 +21,21 @@ public class CommitMessageAssembler {
         var heuristics = Heuristics;
 
         foreach (var heuristic in heuristics)
-            separator = MaybeAddHeuristic(repo, separator, heuristic, ref result) ?? separator;
+            MaybeAddHeuristic(repo, heuristic, ref result, ref separator);
 
         return result;
     }
 
-    private string? MaybeAddHeuristic(Repository repo, string before, IHeuristic heuristic, ref string commitMessage) {
+    private void MaybeAddHeuristic(Repository repo, IHeuristic heuristic, ref string commitMessage, ref string before) {
         var heuristicResult = heuristic.Analyse(repo);
 
         var shouldIncludeHeuristic = heuristicResult.Priority > 0 &&
             commitMessage.Length + before.Length + heuristicResult.Value.Length <= MaxCommitTitleLength;
 
-        if (shouldIncludeHeuristic)
-            commitMessage += $"{before}{heuristicResult.Value}";
+        if (!shouldIncludeHeuristic)
+            return;
 
-        return heuristicResult.After;
+        commitMessage += $"{before}{heuristicResult.Value}";
+        before = heuristicResult.After ?? "";
     }
 }
