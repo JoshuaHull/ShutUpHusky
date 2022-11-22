@@ -1,13 +1,14 @@
 using LibGit2Sharp;
 using ShutUpHusky.Heuristics;
+using ShutUpHusky.Utils;
 
 namespace ShutUpHusky;
 
 public class CommitMessageAssembler {
     private const int MaxCommitTitleLength = 72;
 
-    private static IEnumerable<IHeuristic> Heuristics => new IHeuristic[] {
-        new TicketHeuristic(),
+    private IEnumerable<IHeuristic> Heuristics => new IHeuristic[] {
+        new TicketHeuristic(_randomNumberGenerator),
         new SubjectHeuristic(),
         new CreationHeuristic(),
         new DeletionHeuristic(),
@@ -15,7 +16,13 @@ public class CommitMessageAssembler {
         new RenamingHeuristic(),
     };
 
-    public string Assemble(Repository repo) {
+    private readonly IRandomNumberGenerator _randomNumberGenerator;
+
+    public CommitMessageAssembler(IRandomNumberGenerator randomNumberGenerator) {
+        _randomNumberGenerator = randomNumberGenerator;
+    }
+
+    public string Assemble(IRepository repo) {
         var result = string.Empty;
         var separator = string.Empty;
         var heuristics = Heuristics;
@@ -26,7 +33,7 @@ public class CommitMessageAssembler {
         return result;
     }
 
-    private void MaybeAddHeuristic(Repository repo, IHeuristic heuristic, ref string commitMessage, ref string before) {
+    private void MaybeAddHeuristic(IRepository repo, IHeuristic heuristic, ref string commitMessage, ref string before) {
         var heuristicResult = heuristic.Analyse(repo);
 
         var shouldIncludeHeuristic = heuristicResult.Priority > 0 &&

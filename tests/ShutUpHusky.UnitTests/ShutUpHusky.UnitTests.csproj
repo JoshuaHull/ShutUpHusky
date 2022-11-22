@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/ShutUpHusky/ShutUpHusky.csproj" />
     <ProjectReference Include="../ShutUpHusky.TestSdk/ShutUpHusky.TestSdk.csproj" />
   </ItemGroup>
 

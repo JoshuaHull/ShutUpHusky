@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using LibGit2Sharp;
 using ShutUpHusky;
+using ShutUpHusky.Utils;
 
 if (args.Length < 1) {
     Console.WriteLine(@"Expected usage: dotnet run ""C:\Users\User\SomeRepo""");
@@ -9,7 +10,7 @@ if (args.Length < 1) {
 
 var repo = new Repository(args[0]);
 
-var commitMessage = new CommitMessageAssembler().Assemble(repo);
+var commitMessage = new CommitMessageAssembler(new RandomNumberGenerator()).Assemble(repo);
 
 Console.WriteLine(commitMessage);
 
