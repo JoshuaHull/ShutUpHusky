@@ -7,7 +7,7 @@ namespace ShutUpHusky;
 public class CommitMessageAssembler {
     private const int MaxCommitTitleLength = 72;
 
-    private IEnumerable<IHeuristic> Heuristics => new IHeuristic[] {
+    private IHeuristic[] Heuristics => new IHeuristic[] {
         new TicketHeuristic(_randomNumberGenerator),
         new SubjectHeuristic(),
         new CreationHeuristic(),
@@ -22,27 +22,21 @@ public class CommitMessageAssembler {
         _randomNumberGenerator = randomNumberGenerator;
     }
 
-    public string Assemble(IRepository repo) {
-        var result = string.Empty;
-        var separator = string.Empty;
-        var heuristics = Heuristics;
+    public string Assemble(IRepository repo) => ApplyHeuristics(repo, Heuristics, string.Empty, string.Empty);
 
-        foreach (var heuristic in heuristics)
-            MaybeAddHeuristic(repo, heuristic, ref result, ref separator);
+    private string ApplyHeuristics(IRepository repo, IHeuristic[] heuristics, string commitMessage, string separator) {
+        if (heuristics.Length == 0)
+            return commitMessage;
 
-        return result;
-    }
-
-    private void MaybeAddHeuristic(IRepository repo, IHeuristic heuristic, ref string commitMessage, ref string before) {
-        var heuristicResult = heuristic.Analyse(repo);
+        var (h, hs) = (heuristics[0], heuristics[1..]);
+        var heuristicResult = h.Analyse(repo);
 
         var shouldIncludeHeuristic = heuristicResult.Priority > 0 &&
-            commitMessage.Length + before.Length + heuristicResult.Value.Length <= MaxCommitTitleLength;
+            commitMessage.Length + separator.Length + heuristicResult.Value.Length <= MaxCommitTitleLength;
 
         if (!shouldIncludeHeuristic)
-            return;
+            return ApplyHeuristics(repo, hs, commitMessage, separator);
 
-        commitMessage += $"{before}{heuristicResult.Value}";
-        before = heuristicResult.After ?? "";
+        return ApplyHeuristics(repo, hs, $"{commitMessage}{separator}{heuristicResult.Value}", heuristicResult.After ?? "");
     }
 }
