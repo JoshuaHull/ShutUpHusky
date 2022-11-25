@@ -14,7 +14,7 @@ public class RenamingHeuristic : IHeuristic {
         if (modifiedFiles.Count == 0)
             return new HeuristicResult[] {
                 new() {
-                    Priority = 0,
+                    Priority = Constants.NotAPriority,
                     Value = string.Empty,
                 },
             };
@@ -32,7 +32,7 @@ public class RenamingHeuristic : IHeuristic {
 
         return new HeuristicResult[] {
             new() {
-                Priority = 1,
+                Priority = Constants.LowPriorty,
                 Value = $"renamed {fileName}",
             },
         };

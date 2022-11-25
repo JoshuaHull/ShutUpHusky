@@ -17,7 +17,7 @@ public class TicketHeuristic : IHeuristic {
         if (ticketNumberMatch.Success)
             return new HeuristicResult[] {
                 new() {
-                    Priority = 10,
+                    Priority = Constants.TicketPriority,
                     Value = $"feat({ticketNumberMatch.Value.ToLowerInvariant()})",
                     After = ": ",
                 },
@@ -25,7 +25,7 @@ public class TicketHeuristic : IHeuristic {
 
         return new HeuristicResult[] {
             new() {
-                Priority = 10,
+                Priority = Constants.TicketPriority,
                 Value = $"feat(rand-{(Math.Floor(_randomNumberGenerator.Next() * 9999))})",
                 After = ": ",
             },

@@ -14,7 +14,7 @@ public class DeletionHeuristic : IHeuristic {
         if (modifiedFiles.Count == 0)
             return new HeuristicResult[] {
                 new() {
-                    Priority = 0,
+                    Priority = Constants.NotAPriority,
                     Value = string.Empty,
                 },
             };
@@ -32,7 +32,7 @@ public class DeletionHeuristic : IHeuristic {
         if (largestDeletedFile.LinesDeleted == 0)
             return new HeuristicResult[] {
                 new() {
-                    Priority = 0,
+                    Priority = Constants.NotAPriority,
                     Value = string.Empty,
                 },
             };
@@ -41,7 +41,7 @@ public class DeletionHeuristic : IHeuristic {
 
         return new HeuristicResult[] {
             new() {
-                Priority = 1,
+                Priority = Constants.MediumPriorty,
                 Value = $"deleted {fileName}",
                 After = ", ",
             },

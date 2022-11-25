@@ -18,7 +18,7 @@ public class SubjectHeuristic : IHeuristic {
         if (stagedFiles.Count == 0)
             return new HeuristicResult[] {
                 new() {
-                    Priority = 0,
+                    Priority = Constants.NotAPriority,
                     Value = string.Empty,
                 },
             };
@@ -38,14 +38,14 @@ public class SubjectHeuristic : IHeuristic {
         if (mostCommonTerm.Value == 1)
             return new HeuristicResult[] {
                 new() {
-                    Priority = 0,
+                    Priority = Constants.NotAPriority,
                     Value = string.Empty,
                 },
             };
 
         return new HeuristicResult[] {
             new() {
-                Priority = 1,
+                Priority = Constants.SubjectPriority,
                 Value = mostCommonTerm.Key,
                 After = " > ",
             },
