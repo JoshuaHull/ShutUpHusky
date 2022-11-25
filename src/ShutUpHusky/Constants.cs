@@ -5,4 +5,5 @@ internal static class Constants {
     public const int MediumPriorty = 5;
     public const int LowPriorty = 1;
     public const int NotAPriority = 0;
+    public const int MaxCommitTitleLength = 72;
 }
