@@ -22,21 +22,26 @@ public class CommitMessageAssembler {
         _randomNumberGenerator = randomNumberGenerator;
     }
 
-    public string Assemble(IRepository repo) => ApplyHeuristics(repo, Heuristics, string.Empty, string.Empty);
+    public string Assemble(IRepository repo) {
+        var heuristicResults = Heuristics
+            .SelectMany(h => h.Analyse(repo))
+            .ToArray();
 
-    private string ApplyHeuristics(IRepository repo, IHeuristic[] heuristics, string commitMessage, string separator) {
-        if (heuristics.Length == 0)
+        return ApplyHeuristics(repo, heuristicResults, string.Empty, string.Empty);
+    }
+
+    private string ApplyHeuristics(IRepository repo, HeuristicResult[] heuristicResults, string commitMessage, string separator) {
+        if (heuristicResults.Length == 0)
             return commitMessage;
 
-        var (h, hs) = (heuristics[0], heuristics[1..]);
-        var heuristicResult = h.Analyse(repo).Single();
+        var (h, hs) = (heuristicResults[0], heuristicResults[1..]);
 
-        var shouldIncludeHeuristic = heuristicResult.Priority > 0 &&
-            commitMessage.Length + separator.Length + heuristicResult.Value.Length <= MaxCommitTitleLength;
+        var shouldIncludeHeuristic = h.Priority > 0 &&
+            commitMessage.Length + separator.Length + h.Value.Length <= MaxCommitTitleLength;
 
         if (!shouldIncludeHeuristic)
             return ApplyHeuristics(repo, hs, commitMessage, separator);
 
-        return ApplyHeuristics(repo, hs, $"{commitMessage}{separator}{heuristicResult.Value}", heuristicResult.After ?? "");
+        return ApplyHeuristics(repo, hs, $"{commitMessage}{separator}{h.Value}", h.After ?? "");
     }
 }
