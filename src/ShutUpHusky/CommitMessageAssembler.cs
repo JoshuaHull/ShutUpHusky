@@ -25,7 +25,7 @@ public class CommitMessageAssembler {
     public string Assemble(IRepository repo) {
         var heuristicResults = Heuristics
             .SelectMany(h => h.Analyse(repo))
-            .Where(h => h.Priority > 0)
+            .Where(h => h.Priority > Constants.NotAPriority)
             .OrderByDescending(h => h.Priority)
             .ToArray();
 
