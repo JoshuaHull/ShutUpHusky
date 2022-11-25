@@ -11,20 +11,24 @@ public class TicketHeuristic : IHeuristic {
         _randomNumberGenerator = randomNumberGenerator;
     }
 
-    public HeuristicResult Analyse(IRepository repo) {
+    public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var ticketNumberMatch = Regex.Match(repo.Head.FriendlyName, "[a-zA-Z]+\\-[0-9]+");
 
         if (ticketNumberMatch.Success)
-            return new() {
-                Priority = 10,
-                Value = $"feat({ticketNumberMatch.Value.ToLowerInvariant()})",
-                After = ": ",
+            return new HeuristicResult[] {
+                new() {
+                    Priority = 10,
+                    Value = $"feat({ticketNumberMatch.Value.ToLowerInvariant()})",
+                    After = ": ",
+                },
             };
 
-        return new() {
-            Priority = 10,
-            Value = $"feat(rand-{(Math.Floor(_randomNumberGenerator.Next() * 9999))})",
-            After = ": ",
+        return new HeuristicResult[] {
+            new() {
+                Priority = 10,
+                Value = $"feat(rand-{(Math.Floor(_randomNumberGenerator.Next() * 9999))})",
+                After = ": ",
+            },
         };
     }
 }

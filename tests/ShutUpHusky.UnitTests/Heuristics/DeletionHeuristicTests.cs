@@ -63,6 +63,7 @@ public class DeletionHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Value.Should().Be("deleted large-deleted-file");
+        result.Count.Should().Be(1);
+        result.Single().Value.Should().Be("deleted large-deleted-file");
     }
 }

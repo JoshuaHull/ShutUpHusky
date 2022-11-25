@@ -3,5 +3,5 @@ using LibGit2Sharp;
 namespace ShutUpHusky.Heuristics;
 
 public interface IHeuristic {
-    HeuristicResult Analyse(IRepository repo);
+    ICollection<HeuristicResult> Analyse(IRepository repo);
 }

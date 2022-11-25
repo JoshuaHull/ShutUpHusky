@@ -29,7 +29,7 @@ public class CommitMessageAssembler {
             return commitMessage;
 
         var (h, hs) = (heuristics[0], heuristics[1..]);
-        var heuristicResult = h.Analyse(repo);
+        var heuristicResult = h.Analyse(repo).Single();
 
         var shouldIncludeHeuristic = heuristicResult.Priority > 0 &&
             commitMessage.Length + separator.Length + heuristicResult.Value.Length <= MaxCommitTitleLength;

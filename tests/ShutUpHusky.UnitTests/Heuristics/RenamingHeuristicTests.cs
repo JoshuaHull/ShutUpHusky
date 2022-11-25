@@ -63,6 +63,7 @@ public class RenamingHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Value.Should().Be("renamed renamed-file");
+        result.Count.Should().Be(1);
+        result.Single().Value.Should().Be("renamed renamed-file");
     }
 }

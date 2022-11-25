@@ -4,7 +4,7 @@ using ShutUpHusky.Utils;
 namespace ShutUpHusky.Heuristics;
 
 public class RenamingHeuristic : IHeuristic {
-    public HeuristicResult Analyse(IRepository repo) {
+    public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var status = repo.RetrieveStatus(new StatusOptions());
 
         var modifiedFiles = status
@@ -12,9 +12,11 @@ public class RenamingHeuristic : IHeuristic {
             .ToList();
 
         if (modifiedFiles.Count == 0)
-            return new() {
-                Priority = 0,
-                Value = string.Empty,
+            return new HeuristicResult[] {
+                new() {
+                    Priority = 0,
+                    Value = string.Empty,
+                },
             };
 
         var patches = modifiedFiles
@@ -28,9 +30,11 @@ public class RenamingHeuristic : IHeuristic {
 
         var fileName = patches[renamedFile].FilePath.GetFileName().CamelCaseToKebabCase();
 
-        return new() {
-            Priority = 1,
-            Value = $"renamed {fileName}",
+        return new HeuristicResult[] {
+            new() {
+                Priority = 1,
+                Value = $"renamed {fileName}",
+            },
         };
     }
 }

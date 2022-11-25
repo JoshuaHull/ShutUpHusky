@@ -1,3 +1,4 @@
+using FluentAssertions;
 using LibGit2Sharp;
 using NUnit.Framework;
 using ShutUpHusky.Heuristics;
@@ -44,6 +45,7 @@ public class SubjectHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        return result.Value;
+        result.Count.Should().Be(1);
+        return result.Single().Value;
     }
 }

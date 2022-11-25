@@ -4,7 +4,7 @@ using ShutUpHusky.Utils;
 namespace ShutUpHusky.Heuristics;
 
 public class SubjectHeuristic : IHeuristic {
-    public HeuristicResult Analyse(IRepository repo) {
+    public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var stagedFiles = repo
             .RetrieveStatus(new StatusOptions())
             .Where(file =>
@@ -16,9 +16,11 @@ public class SubjectHeuristic : IHeuristic {
             .ToList();
 
         if (stagedFiles.Count == 0)
-            return new() {
-                Priority = 0,
-                Value = string.Empty,
+            return new HeuristicResult[] {
+                new() {
+                    Priority = 0,
+                    Value = string.Empty,
+                },
             };
 
         var fileTerms = stagedFiles
@@ -34,15 +36,19 @@ public class SubjectHeuristic : IHeuristic {
             .First();
 
         if (mostCommonTerm.Value == 1)
-            return new() {
-                Priority = 0,
-                Value = string.Empty,
+            return new HeuristicResult[] {
+                new() {
+                    Priority = 0,
+                    Value = string.Empty,
+                },
             };
 
-        return new() {
-            Priority = 1,
-            Value = mostCommonTerm.Key,
-            After = " > ",
+        return new HeuristicResult[] {
+            new() {
+                Priority = 1,
+                Value = mostCommonTerm.Key,
+                After = " > ",
+            },
         };
     }
 }

@@ -63,6 +63,7 @@ public class ModificationHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Value.Should().Be("updated most-changed-file");
+        result.Count.Should().Be(1);
+        result.Single().Value.Should().Be("updated most-changed-file");
     }
 }

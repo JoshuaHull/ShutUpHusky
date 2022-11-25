@@ -63,6 +63,7 @@ public class CreationHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Value.Should().Be("created large-created-file");
+        result.Count.Should().Be(1);
+        result.Single().Value.Should().Be("created large-created-file");
     }
 }
