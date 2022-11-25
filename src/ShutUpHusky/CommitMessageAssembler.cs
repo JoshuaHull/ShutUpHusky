@@ -25,19 +25,20 @@ public class CommitMessageAssembler {
     public string Assemble(IRepository repo) {
         var heuristicResults = Heuristics
             .SelectMany(h => h.Analyse(repo))
+            .Where(h => h.Priority > 0)
+            .OrderByDescending(h => h.Priority)
             .ToArray();
 
         return ApplyHeuristics(repo, heuristicResults, string.Empty, string.Empty);
     }
 
     private string ApplyHeuristics(IRepository repo, HeuristicResult[] heuristicResults, string commitMessage, string separator) {
-        if (heuristicResults.Length == 0)
+        if (heuristicResults.Length == 0 || commitMessage.Length + separator.Length >= MaxCommitTitleLength)
             return commitMessage;
 
         var (h, hs) = (heuristicResults[0], heuristicResults[1..]);
 
-        var shouldIncludeHeuristic = h.Priority > 0 &&
-            commitMessage.Length + separator.Length + h.Value.Length <= MaxCommitTitleLength;
+        var shouldIncludeHeuristic = commitMessage.Length + separator.Length + h.Value.Length <= MaxCommitTitleLength;
 
         if (!shouldIncludeHeuristic)
             return ApplyHeuristics(repo, hs, commitMessage, separator);
