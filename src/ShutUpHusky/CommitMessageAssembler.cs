@@ -1,24 +1,17 @@
 using LibGit2Sharp;
 using ShutUpHusky.Heuristics;
-using ShutUpHusky.Utils;
 
 namespace ShutUpHusky;
 
 public class CommitMessageAssembler {
     private IHeuristic[] Heuristics => new IHeuristic[] {
-        new TypeAndScopeHeuristic(_randomNumberGenerator),
+        new TypeAndScopeHeuristic(),
         new SubjectHeuristic(),
         new CreationHeuristic(),
         new DeletionHeuristic(),
         new ModificationHeuristic(),
         new RenamingHeuristic(),
     };
-
-    private readonly IRandomNumberGenerator _randomNumberGenerator;
-
-    public CommitMessageAssembler(IRandomNumberGenerator randomNumberGenerator) {
-        _randomNumberGenerator = randomNumberGenerator;
-    }
 
     public string Assemble(IRepository repo) {
         var heuristicResults = Heuristics
