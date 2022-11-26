@@ -72,7 +72,7 @@ public class CommitMessageAssemblerTests {
 
         // Assert
         result.Should().Be(
-            "feat: file > created created-file, deleted deleted-file"
+            "chore: file > created created-file, deleted deleted-file"
         );
     }
 }
