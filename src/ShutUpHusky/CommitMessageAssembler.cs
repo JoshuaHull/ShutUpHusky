@@ -6,7 +6,7 @@ namespace ShutUpHusky;
 
 public class CommitMessageAssembler {
     private IHeuristic[] Heuristics => new IHeuristic[] {
-        new TicketHeuristic(_randomNumberGenerator),
+        new TypeAndScopeHeuristic(_randomNumberGenerator),
         new SubjectHeuristic(),
         new CreationHeuristic(),
         new DeletionHeuristic(),

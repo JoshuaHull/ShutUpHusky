@@ -4,10 +4,10 @@ using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics;
 
-internal class TicketHeuristic : IHeuristic {
+internal class TypeAndScopeHeuristic : IHeuristic {
     private readonly IRandomNumberGenerator _randomNumberGenerator;
 
-    public TicketHeuristic(IRandomNumberGenerator randomNumberGenerator) {
+    public TypeAndScopeHeuristic(IRandomNumberGenerator randomNumberGenerator) {
         _randomNumberGenerator = randomNumberGenerator;
     }
 
@@ -17,7 +17,7 @@ internal class TicketHeuristic : IHeuristic {
         if (ticketNumberMatch.Success)
             return new HeuristicResult[] {
                 new() {
-                    Priority = Constants.TicketPriority,
+                    Priority = Constants.TypeAndScopePriority,
                     Value = $"feat({ticketNumberMatch.Value.ToLowerInvariant()})",
                     After = ": ",
                 },
@@ -25,7 +25,7 @@ internal class TicketHeuristic : IHeuristic {
 
         return new HeuristicResult[] {
             new() {
-                Priority = Constants.TicketPriority,
+                Priority = Constants.TypeAndScopePriority,
                 Value = $"feat(rand-{(Math.Floor(_randomNumberGenerator.Next() * 9999))})",
                 After = ": ",
             },
