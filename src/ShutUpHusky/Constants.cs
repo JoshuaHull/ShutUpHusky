@@ -29,7 +29,7 @@ internal static class Constants {
         public const string Tests = "tests";
         public const string Spec = "spec";
         public const string Specs = "specs";
-        public static string[] All => new[] {
+        public static string[] AllTestTerms => new[] {
             Test,
             Tests,
             Spec,
