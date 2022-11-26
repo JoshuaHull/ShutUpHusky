@@ -1,26 +1,46 @@
-﻿using System.Diagnostics;
+﻿using System.CommandLine;
+using System.Diagnostics;
 using LibGit2Sharp;
 using ShutUpHusky;
 
-if (args.Length < 1) {
-    Console.WriteLine(@"Expected usage: dotnet run ""C:\Users\User\SomeRepo""");
-    return;
-}
-
-var repo = new Repository(args[0]);
-
-var commitMessage = new CommitMessageAssembler().Assemble(repo);
-
-Console.WriteLine(commitMessage);
-
-var info = new ProcessStartInfo {
-    FileName = "cmd.exe",
-    Arguments = @$"/K git commit -m ""{commitMessage}"" && exit",
-    CreateNoWindow = false,
-    UseShellExecute = false,
-    WorkingDirectory = args[0],
+var noWindowOption = new Option<bool>("--no-window", "Whether or not a console window should be launched") {
+    Arity = ArgumentArity.ZeroOrOne,
 };
 
-var process = Process.Start(info);
+var repoOption = new Option<string>("--repo", "The location of the repo to commit to") {
+    Arity = ArgumentArity.ExactlyOne,
+};
 
-process?.WaitForExit();
+var command = new RootCommand {
+    noWindowOption,
+    repoOption,
+};
+
+command.AddValidator(result => {
+    if (result.GetValueForOption(repoOption) is null)
+        result.ErrorMessage = "--repo is required";
+});
+
+command.SetHandler<bool, string>((noWindow, repoLocation) => {
+    Console.WriteLine(repoLocation);
+    var repo = new Repository(repoLocation);
+
+    var commitMessage = new CommitMessageAssembler().Assemble(repo);
+
+    Console.WriteLine("ShutUpHusky! Committing with message:");
+    Console.WriteLine(commitMessage);
+
+    var info = new ProcessStartInfo {
+        FileName = "cmd.exe",
+        Arguments = @$"/K git commit -m ""{commitMessage}"" && exit",
+        CreateNoWindow = noWindow,
+        UseShellExecute = false,
+        WorkingDirectory = repoLocation,
+    };
+
+    var process = Process.Start(info);
+
+    process?.WaitForExit();
+}, noWindowOption, repoOption);
+
+await command.InvokeAsync(args);
