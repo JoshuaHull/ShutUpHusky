@@ -6,7 +6,7 @@ internal static class Constants {
     public const int LowPriorty = 1;
     public const int NotAPriority = 0;
     public const int MaxCommitTitleLength = 72;
-    public const double TypeOverrideThreshold = 0.8;
+    public const double TypeOverrideThreshold = 0.5;
 
     public static class FileExtensions {
         public const string Yaml = "yaml";
