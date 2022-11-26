@@ -5,31 +5,15 @@ namespace ShutUpHusky.Heuristics;
 
 internal class DeletionHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
-        var status = repo.RetrieveStatus(new StatusOptions());
-
-        var modifiedFiles = status
-            .Where(file => file.State == FileStatus.DeletedFromIndex)
-            .ToList();
-
-        if (modifiedFiles.Count == 0)
-            return new HeuristicResult[] {
-                new() {
-                    Priority = Constants.NotAPriority,
-                    Value = string.Empty,
-                },
-            };
-
-        var patches = modifiedFiles
-            .ToDictionary(file => repo.Diff.Compare<Patch>(repo.Head.Tip.Tree, DiffTargets.Index, new List<string> {
-                file.FilePath,
-            }));
-
-        var largestDeletedFile = patches
+        var deletedFiles = repo.GetDeletedFiles();
+        var statusEntriesByPatch = deletedFiles.MapPatchToStatusEntry(repo);
+        var patchesOrderedByDiff = statusEntriesByPatch
             .Keys
             .OrderByDescending(patch => patch.LinesDeleted)
-            .First();
+            .ToList();
+        var patchCount = patchesOrderedByDiff.Count;
 
-        if (largestDeletedFile.LinesDeleted == 0)
+        if (patchCount == 0)
             return new HeuristicResult[] {
                 new() {
                     Priority = Constants.NotAPriority,
@@ -37,14 +21,20 @@ internal class DeletionHeuristic : IHeuristic {
                 },
             };
 
-        var fileName = patches[largestDeletedFile].FilePath.GetFileName().CamelCaseToKebabCase();
+        var rtn = new HeuristicResult[patchCount];
 
-        return new HeuristicResult[] {
-            new() {
-                Priority = Constants.MediumPriorty,
-                Value = $"deleted {fileName}",
+        for (var i = 0; i < patchCount; i += 1) {
+            var currentFile = patchesOrderedByDiff[i];
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToDeletedCommitMessageSnippet();
+            var priority = i.ToPriority(Constants.NotAPriority, Constants.MediumPriorty, patchCount);
+
+            rtn[i] = new() {
+                Priority = priority,
+                Value = commitMessageSnippet,
                 After = ", ",
-            },
-        };
+            };
+        }
+
+        return rtn;
     }
 }
