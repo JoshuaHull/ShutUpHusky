@@ -4,7 +4,7 @@ using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics;
 
-public class TicketHeuristic : IHeuristic {
+internal class TicketHeuristic : IHeuristic {
     private readonly IRandomNumberGenerator _randomNumberGenerator;
 
     public TicketHeuristic(IRandomNumberGenerator randomNumberGenerator) {

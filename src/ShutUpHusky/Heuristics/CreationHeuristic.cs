@@ -3,7 +3,7 @@ using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics;
 
-public class CreationHeuristic : IHeuristic {
+internal class CreationHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var status = repo.RetrieveStatus(new StatusOptions());
 

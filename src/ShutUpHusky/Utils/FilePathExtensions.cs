@@ -1,6 +1,6 @@
 namespace ShutUpHusky.Utils;
 
-public static class FilePathExtensions {
+internal static class FilePathExtensions {
     public static string GetFileName(this string filePath) {
         var fullFileName = filePath.Split("/").Last();
 

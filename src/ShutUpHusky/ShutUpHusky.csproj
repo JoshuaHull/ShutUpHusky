@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="ShutUpHusky.UnitTests" />
+    <InternalsVisibleTo Include="ShutUpHusky.TestSdk" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
   </ItemGroup>
 
