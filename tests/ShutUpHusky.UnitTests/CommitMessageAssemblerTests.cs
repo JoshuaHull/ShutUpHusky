@@ -65,15 +65,14 @@ public class CommitMessageAssemblerTests {
                 .Object,
         };
 
-        var generator = new MockRandomNumberGenerator(0.1234);
-        var assembler = new CommitMessageAssembler(generator.Object);
+        var assembler = new CommitMessageAssembler();
 
         // Act
         var result = assembler.Assemble(repo.Object);
 
         // Assert
         result.Should().Be(
-            "feat(rand-1233): file > created created-file, deleted deleted-file"
+            "feat: file > created created-file, deleted deleted-file"
         );
     }
 }
