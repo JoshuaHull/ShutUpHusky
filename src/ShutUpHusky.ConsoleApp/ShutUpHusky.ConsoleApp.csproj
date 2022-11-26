@@ -1,18 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="ShutUpHusky.UnitTests" />
-    <InternalsVisibleTo Include="ShutUpHusky.TestSdk" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+    <ProjectReference Include="../ShutUpHusky/ShutUpHusky.csproj" />
   </ItemGroup>
 
 </Project>

@@ -26,7 +26,8 @@ internal class RenamingHeuristic : IHeuristic {
 
         var renamedFile = patches
             .Keys
-            .First(patch => patch.LinesAdded == 0 && patch.LinesDeleted == 0);
+            // looks like renaming a file re-adds all its lines
+            .First(patch => patch.LinesDeleted == 0 /* && patch.LinesAdded == 0 */);
 
         var fileName = patches[renamedFile].FilePath.GetFileName().CamelCaseToKebabCase();
 
