@@ -24,6 +24,11 @@ internal static class LibGit2SharpExtensions {
             .RetrieveStatus(new StatusOptions())
             .GetAllAlteredFiles();
 
+    public static List<StatusEntry> GetCreatedFiles(this IRepository repo) =>
+        repo
+            .RetrieveStatus(new StatusOptions())
+            .GetCreatedFiles();
+
     public static List<StatusEntry> GetModifiedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
@@ -43,6 +48,9 @@ internal static class LibGit2SharpExtensions {
 
     public static List<StatusEntry> GetAllAlteredFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
+
+    public static List<StatusEntry> GetCreatedFiles(this RepositoryStatus status) =>
+        status.GetFiles(FileStatus.NewInIndex);
 
     public static List<StatusEntry> GetModifiedFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.ModifiedInIndex);
@@ -84,6 +92,8 @@ internal static class LibGit2SharpExtensions {
     public static string GetFileName(this StatusEntry entry) =>
         entry.FilePath.GetFileName();
 
+    public static string ToCreatedCommitMessageSnippet(this StatusEntry statusEntry) =>
+        $"created {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
     public static string ToUpdatedCommitMessageSnippet(this StatusEntry statusEntry) =>
         $"updated {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
 }

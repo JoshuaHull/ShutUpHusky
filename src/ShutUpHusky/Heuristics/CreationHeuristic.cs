@@ -5,13 +5,9 @@ namespace ShutUpHusky.Heuristics;
 
 internal class CreationHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
-        var status = repo.RetrieveStatus(new StatusOptions());
+        var createdFiles = repo.GetCreatedFiles();
 
-        var modifiedFiles = status
-            .Where(file => file.State == FileStatus.NewInIndex)
-            .ToList();
-
-        if (modifiedFiles.Count == 0)
+        if (createdFiles.Count == 0)
             return new HeuristicResult[] {
                 new() {
                     Priority = Constants.NotAPriority,
@@ -19,12 +15,9 @@ internal class CreationHeuristic : IHeuristic {
                 },
             };
 
-        var patches = modifiedFiles
-            .ToDictionary(file => repo.Diff.Compare<Patch>(repo.Head.Tip.Tree, DiffTargets.Index, new List<string> {
-                file.FilePath,
-            }));
+        var statusEntriesByPatch = createdFiles.MapPatchToStatusEntry(repo);
 
-        var largestCreatedFile = patches
+        var largestCreatedFile = statusEntriesByPatch
             .Keys
             .OrderByDescending(patch => patch.LinesAdded)
             .First();
@@ -37,12 +30,12 @@ internal class CreationHeuristic : IHeuristic {
                 },
             };
 
-        var fileName = patches[largestCreatedFile].FilePath.GetFileName().CamelCaseToKebabCase();
+        var commitMessageSnippet = statusEntriesByPatch[largestCreatedFile].ToCreatedCommitMessageSnippet();
 
         return new HeuristicResult[] {
             new() {
                 Priority = Constants.HighPriorty,
-                Value = $"created {fileName}",
+                Value = commitMessageSnippet,
                 After = ", ",
             },
         };
