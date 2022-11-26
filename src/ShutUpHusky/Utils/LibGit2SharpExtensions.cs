@@ -86,6 +86,9 @@ internal static class LibGit2SharpExtensions {
 
     public static string ToCreatedCommitMessageSnippet(this StatusEntry statusEntry) =>
         $"created {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
+
+    public static string ToDeletedCommitMessageSnippet(this StatusEntry statusEntry) =>
+        $"deleted {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
     public static string ToUpdatedCommitMessageSnippet(this StatusEntry statusEntry) =>
         $"updated {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
 }
