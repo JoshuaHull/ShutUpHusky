@@ -9,14 +9,6 @@ internal static class LibGit2SharpExtensions {
         entry.FilePath,
     }));
 
-    public static List<Patch> ToOrderedPatches(
-        this Dictionary<Patch, StatusEntry> entriesByPatch, Func<Patch, int> eval
-    ) => entriesByPatch
-        .Keys
-        .Where(patch => eval(patch) != 0)
-        .OrderByDescending(eval)
-        .ToList();
-
     /* IRepository extensions */
 
     public static List<StatusEntry> GetAllAlteredFiles(this IRepository repo) =>
