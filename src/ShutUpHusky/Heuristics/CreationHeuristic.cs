@@ -6,23 +6,14 @@ namespace ShutUpHusky.Heuristics;
 internal class CreationHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var createdFiles = repo.GetCreatedFiles();
-
-        if (createdFiles.Count == 0)
-            return new HeuristicResult[] {
-                new() {
-                    Priority = Constants.NotAPriority,
-                    Value = string.Empty,
-                },
-            };
-
         var statusEntriesByPatch = createdFiles.MapPatchToStatusEntry(repo);
-
-        var largestCreatedFile = statusEntriesByPatch
+        var patchesOrderedByDiff = statusEntriesByPatch
             .Keys
             .OrderByDescending(patch => patch.LinesAdded)
-            .First();
+            .ToList();
+        var patchCount = patchesOrderedByDiff.Count;
 
-        if (largestCreatedFile.LinesAdded == 0)
+        if (patchCount == 0)
             return new HeuristicResult[] {
                 new() {
                     Priority = Constants.NotAPriority,
@@ -30,14 +21,20 @@ internal class CreationHeuristic : IHeuristic {
                 },
             };
 
-        var commitMessageSnippet = statusEntriesByPatch[largestCreatedFile].ToCreatedCommitMessageSnippet();
+        var rtn = new HeuristicResult[patchCount];
 
-        return new HeuristicResult[] {
-            new() {
-                Priority = Constants.HighPriorty,
+        for (var i = 0; i < patchCount; i += 1) {
+            var currentFile = patchesOrderedByDiff[i];
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCreatedCommitMessageSnippet();
+            var priority = i.ToPriority(Constants.NotAPriority, Constants.HighPriorty, patchCount);
+
+            rtn[i] = new() {
+                Priority = priority,
                 Value = commitMessageSnippet,
                 After = ", ",
-            },
-        };
+            };
+        }
+
+        return rtn;
     }
 }
