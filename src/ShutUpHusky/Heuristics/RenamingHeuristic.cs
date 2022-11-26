@@ -5,13 +5,16 @@ namespace ShutUpHusky.Heuristics;
 
 internal class RenamingHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
-        var status = repo.RetrieveStatus(new StatusOptions());
-
-        var modifiedFiles = status
-            .Where(file => file.State == FileStatus.RenamedInIndex)
+        var renamedFiles = repo.GetRenamedFiles();
+        var statusEntriesByPatch = renamedFiles.MapPatchToStatusEntry(repo);
+        var patchesOrderedByDiff = statusEntriesByPatch
+            .Keys
+            .Where(patch => patch.LinesDeleted == 0)
+            .OrderByDescending(patch => patch.LinesAdded)
             .ToList();
+        var patchCount = patchesOrderedByDiff.Count;
 
-        if (modifiedFiles.Count == 0)
+        if (patchCount == 0)
             return new HeuristicResult[] {
                 new() {
                     Priority = Constants.NotAPriority,
@@ -19,23 +22,20 @@ internal class RenamingHeuristic : IHeuristic {
                 },
             };
 
-        var patches = modifiedFiles
-            .ToDictionary(file => repo.Diff.Compare<Patch>(repo.Head.Tip.Tree, DiffTargets.Index, new List<string> {
-                file.FilePath,
-            }));
+        var rtn = new HeuristicResult[patchCount];
 
-        var renamedFile = patches
-            .Keys
-            // looks like renaming a file re-adds all its lines
-            .First(patch => patch.LinesDeleted == 0 /* && patch.LinesAdded == 0 */);
+        for (var i = 0; i < patchCount; i += 1) {
+            var currentFile = patchesOrderedByDiff[i];
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToRenamedCommitMessageSnippet();
+            var priority = i.ToPriority(Constants.NotAPriority, Constants.LowPriorty, patchCount);
 
-        var fileName = patches[renamedFile].FilePath.GetFileName().CamelCaseToKebabCase();
+            rtn[i] = new() {
+                Priority = priority,
+                Value = commitMessageSnippet,
+                After = ", ",
+            };
+        }
 
-        return new HeuristicResult[] {
-            new() {
-                Priority = Constants.LowPriorty,
-                Value = $"renamed {fileName}",
-            },
-        };
+        return rtn;
     }
 }
