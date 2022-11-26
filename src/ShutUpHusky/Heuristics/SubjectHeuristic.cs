@@ -23,9 +23,7 @@ internal class SubjectHeuristic : IHeuristic {
                 },
             };
 
-        var fileTerms = stagedFiles
-            .Select(f => f.FilePath.GetFileName().CamelCaseToKebabCase())
-            .SelectMany(n => n.Split("-"));
+        var fileTerms = stagedFiles.ToFileTerms();
 
         var fileTermsByCount = fileTerms
             .GroupBy(t => t)
