@@ -5,13 +5,12 @@ namespace ShutUpHusky.Heuristics;
 
 internal class ModificationHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
-        var status = repo.RetrieveStatus(new StatusOptions());
+        var modifiedFiles = repo.GetModifiedFiles();
+        var statusEntriesByPatch = modifiedFiles.MapPatchToStatusEntry(repo);
+        var patchesOrderedByDiff = statusEntriesByPatch.ToOrderedPatches(patch => patch.LinesAdded + patch.LinesDeleted);
+        var patchCount = patchesOrderedByDiff.Count;
 
-        var modifiedFiles = status
-            .Where(file => file.State == FileStatus.ModifiedInIndex)
-            .ToList();
-
-        if (modifiedFiles.Count == 0)
+        if (patchCount == 0)
             return new HeuristicResult[] {
                 new() {
                     Priority = Constants.NotAPriority,
@@ -19,32 +18,20 @@ internal class ModificationHeuristic : IHeuristic {
                 },
             };
 
-        var patches = modifiedFiles
-            .ToDictionary(file => repo.Diff.Compare<Patch>(repo.Head.Tip.Tree, DiffTargets.Index, new List<string> {
-                file.FilePath,
-            }));
+        var rtn = new HeuristicResult[patchCount];
 
-        var mostChangedFile = patches
-            .Keys
-            .OrderByDescending(patch => patch.LinesAdded + patch.LinesDeleted)
-            .First();
+        for (var i = 0; i < patchCount; i += 1) {
+            var currentFile = patchesOrderedByDiff[i];
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToUpdatedCommitMessageSnippet();
+            var priority = i.ToPriority(Constants.NotAPriority, Constants.LowPriorty, patchCount);
 
-        if (mostChangedFile.LinesAdded + mostChangedFile.LinesDeleted == 0)
-            return new HeuristicResult[] {
-                new() {
-                    Priority = Constants.NotAPriority,
-                    Value = string.Empty,
-                },
-            };
-
-        var fileName = patches[mostChangedFile].FilePath.GetFileName().CamelCaseToKebabCase();
-
-        return new HeuristicResult[] {
-            new() {
-                Priority = Constants.LowPriorty,
-                Value = $"updated {fileName}",
+            rtn[i] = new() {
+                Priority = priority,
+                Value = commitMessageSnippet,
                 After = ", ",
-            },
-        };
+            };
+        }
+
+        return rtn;
     }
 }
