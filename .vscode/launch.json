@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/ShutUpHusky/bin/Debug/net6.0/ShutUpHusky.dll",
+            "program": "${workspaceFolder}/src/ShutUpHusky/bin/Debug/net7.0/ShutUpHusky.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/ShutUpHusky",
             "console": "internalConsole",
