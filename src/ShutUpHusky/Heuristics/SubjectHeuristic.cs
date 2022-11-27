@@ -5,15 +5,7 @@ namespace ShutUpHusky.Heuristics;
 
 internal class SubjectHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
-        var stagedFiles = repo
-            .RetrieveStatus(new StatusOptions())
-            .Where(file =>
-                file.State == FileStatus.ModifiedInIndex ||
-                file.State == FileStatus.NewInIndex ||
-                file.State == FileStatus.RenamedInIndex ||
-                file.State == FileStatus.DeletedFromIndex
-            )
-            .ToList();
+        var stagedFiles = repo.GetAllAlteredFiles().ToList();
 
         if (stagedFiles.Count == 0)
             return new HeuristicResult[] {
