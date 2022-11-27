@@ -9,7 +9,6 @@ internal class ModificationHeuristic : IHeuristic {
         var statusEntriesByPatch = modifiedFiles.MapPatchToStatusEntry(repo);
         var patchesOrderedByDiff = statusEntriesByPatch
             .Keys
-            .Where(patch => patch.LinesAdded + patch.LinesDeleted != 0)
             .OrderByDescending(patch => patch.LinesAdded + patch.LinesDeleted)
             .ToList();
         var patchCount = patchesOrderedByDiff.Count;

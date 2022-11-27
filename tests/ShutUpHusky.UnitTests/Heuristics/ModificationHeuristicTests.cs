@@ -72,7 +72,7 @@ public class ModificationHeuristicTests
     }
 
     [Test]
-    public void ShouldNotReturnALabel_ForModifiedFile_WithNoLinesChanged() {
+    public void ShouldReturnUpdatedLabel_ForModifiedFile_WithNoLinesChanged() {
         // Arrange
         var singleChangedFile = new MockPatch {
             LinesAdded = 0,
@@ -115,9 +115,9 @@ public class ModificationHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.NotAPriority,
-                Value = string.Empty,
-                After = null,
+                Priority = Constants.LowPriorty,
+                Value = "updated single-changed-file",
+                After = ", ",
             },
         });
     }
