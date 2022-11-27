@@ -357,4 +357,76 @@ public class TypeAndScopeHeuristicTests {
             },
         });
     }
+
+    [Test]
+    public void ShouldReturnChoreType_WhenBranchNameHasNoMatches_AndUnrelatedFilesHaveBeenStaged() {
+        // Arrange
+        var docsFile = new MockPatch {
+            LinesAdded = 100,
+            LinesDeleted = 0,
+        };
+
+        var yamlFile = new MockPatch {
+            LinesAdded = 50,
+            LinesDeleted = 50,
+        };
+
+        var testFile = new MockPatch {
+            LinesAdded = 50,
+            LinesDeleted = 50,
+        };
+
+        var unrelatedFile = new MockPatch {
+            LinesAdded = 50,
+            LinesDeleted = 50,
+        };
+
+        var repo = new MockRepository {
+            Head = new MockBranch {
+                FriendlyName = "some-branch/has-no-scope-or-ticket",
+                Tip = new MockCommit {
+                    Tree = new MockTree {
+                    }.Object,
+                }.Object,
+            }.Object,
+            Status = new MockRepositoryStatus {
+                StatusEntries = new[] {
+                    new MockStatusEntry {
+                        State = FileStatus.NewInIndex,
+                        FilePath = "files/docsFile",
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/yamlFile",
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.ModifiedInIndex,
+                        FilePath = "files/testFile.cs",
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.ModifiedInIndex,
+                        FilePath = "files/unrelatedFile.CS",
+                    }.Object,
+                },
+            }.Object,
+            Diff = new MockDiff()
+                .SeedPatch("files/docsFile", docsFile.Object)
+                .SeedPatch("files/yamlFile", yamlFile.Object)
+                .SeedPatch("files/testFile", testFile.Object)
+                .SeedPatch("files/unrelatedFile", unrelatedFile.Object)
+                .Object
+        };
+
+        // Act
+        var result = Heuristic.Analyse(repo.Object);
+
+        // Assert
+        result.Should().BeEquivalentTo(new List<HeuristicResult> {
+            new() {
+                Priority = Constants.TypeAndScopePriority,
+                Value = "chore",
+                After = ": ",
+            },
+        });
+    }
 }
