@@ -23,13 +23,6 @@ internal class TypeAndScopeHeuristic : IHeuristic {
     }
 
     private string? GetType(IRepository repo) {
-        var typeMatch = Regex.Match(
-            repo.Head.FriendlyName, Constants.Types.MatchAny, RegexOptions.IgnoreCase
-        );
-
-        if (typeMatch.Success)
-            return typeMatch.Value.ToLowerInvariant();
-
         var allAlteredFiles = repo.GetAllAlteredFiles().ToList();
         var deletedFiles = allAlteredFiles.GetDeletedFiles().ToList();
 
@@ -51,7 +44,13 @@ internal class TypeAndScopeHeuristic : IHeuristic {
         if (testFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Test;
 
-        return null;
+        var typeMatch = Regex.Match(
+            repo.Head.FriendlyName, Constants.Types.MatchAny, RegexOptions.IgnoreCase
+        );
+
+        return typeMatch.Success
+            ? typeMatch.Value.ToLowerInvariant()
+            : null;
     }
 
     private string? GetScope(IRepository repo) {

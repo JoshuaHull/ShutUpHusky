@@ -21,7 +21,15 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = branchName,
-            }.Object
+                Tip = new MockCommit {
+                    Tree = new MockTree {
+                    }.Object,
+                }.Object,
+            }.Object,
+            Status = new MockRepositoryStatus {
+                StatusEntries = new StatusEntry[] {},
+            }.Object,
+            Diff = new MockDiff().Object
         };
 
         // Act & Assert
@@ -47,7 +55,15 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = branchName,
-            }.Object
+                Tip = new MockCommit {
+                    Tree = new MockTree {
+                    }.Object,
+                }.Object,
+            }.Object,
+            Status = new MockRepositoryStatus {
+                StatusEntries = new StatusEntry[] {},
+            }.Object,
+            Diff = new MockDiff().Object
         };
 
         // Act & Assert
