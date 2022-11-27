@@ -7,6 +7,7 @@ internal static class Constants {
     public const int NotAPriority = 0;
     public const int MaxCommitTitleLength = 72;
     public const double TypeOverrideThreshold = 0.5;
+    public const string MatchTicket = "[a-zA-Z]+\\-[0-9]+";
 
     public static class FileExtensions {
         public const string Yaml = "yaml";
@@ -21,7 +22,7 @@ internal static class Constants {
         public const string Test = "test";
         public const string Chore = "chore";
         public const string Docs = "docs";
-        public const string MatchAny = "fix|ci|perf|feat|docs|test|chore";
+        public const string MatchAny = "\\bfix|ci|perf|feat|docs|test|chore\\b";
     }
 
     public static class Terms {

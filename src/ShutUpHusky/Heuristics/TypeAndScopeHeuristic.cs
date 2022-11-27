@@ -24,7 +24,7 @@ internal class TypeAndScopeHeuristic : IHeuristic {
 
     private string? GetType(IRepository repo) {
         var typeMatch = Regex.Match(
-            repo.Head.FriendlyName, $"\\b{Constants.Types.MatchAny}\\b", RegexOptions.IgnoreCase
+            repo.Head.FriendlyName, Constants.Types.MatchAny, RegexOptions.IgnoreCase
         );
 
         if (typeMatch.Success)
@@ -55,7 +55,7 @@ internal class TypeAndScopeHeuristic : IHeuristic {
     }
 
     private string? GetScope(IRepository repo) {
-        var ticketNumberMatch = Regex.Match(repo.Head.FriendlyName, "[a-zA-Z]+\\-[0-9]+");
+        var ticketNumberMatch = Regex.Match(repo.Head.FriendlyName, Constants.MatchTicket);
 
         return ticketNumberMatch.Success
             ? ticketNumberMatch.Value.ToLowerInvariant()
