@@ -30,23 +30,23 @@ internal class TypeAndScopeHeuristic : IHeuristic {
         if (typeMatch.Success)
             return typeMatch.Value.ToLowerInvariant();
 
-        var allAlteredFiles = repo.GetAllAlteredFiles();
-        var deletedFiles = allAlteredFiles.GetDeletedFiles();
+        var allAlteredFiles = repo.GetAllAlteredFiles().ToList();
+        var deletedFiles = allAlteredFiles.GetDeletedFiles().ToList();
 
         if (deletedFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Perf;
 
-        var ciFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Yaml);
+        var ciFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Yaml).ToList();
 
         if (ciFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Ci;
 
-        var docsFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Md);
+        var docsFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Md).ToList();
 
         if (docsFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Docs;
 
-        var testFiles = allAlteredFiles.WithFileTerms(Constants.Terms.AllTestTerms);
+        var testFiles = allAlteredFiles.WithFileTerms(Constants.Terms.AllTestTerms).ToList();
 
         if (testFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Test;

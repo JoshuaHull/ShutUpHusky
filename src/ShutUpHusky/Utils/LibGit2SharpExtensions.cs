@@ -11,77 +11,71 @@ internal static class LibGit2SharpExtensions {
 
     /* IRepository extensions */
 
-    public static List<StatusEntry> GetAllAlteredFiles(this IRepository repo) =>
+    public static IEnumerable<StatusEntry> GetAllAlteredFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
             .GetAllAlteredFiles();
 
-    public static List<StatusEntry> GetCreatedFiles(this IRepository repo) =>
+    public static IEnumerable<StatusEntry> GetCreatedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
             .GetCreatedFiles();
 
-    public static List<StatusEntry> GetModifiedFiles(this IRepository repo) =>
+    public static IEnumerable<StatusEntry> GetModifiedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
             .GetModifiedFiles();
 
-    public static List<StatusEntry> GetDeletedFiles(this IRepository repo) =>
+    public static IEnumerable<StatusEntry> GetDeletedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
             .GetDeletedFiles();
 
-    public static List<StatusEntry> GetRenamedFiles(this IRepository repo) =>
+    public static IEnumerable<StatusEntry> GetRenamedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
             .GetRenamedFiles();
 
     /* RepositoryStatus extensions */
 
-    public static List<StatusEntry> GetFiles(this RepositoryStatus status, params FileStatus[] statuses) =>
+    public static IEnumerable<StatusEntry> GetFiles(this RepositoryStatus status, params FileStatus[] statuses) =>
         status
-            .Where(file => statuses.Contains(file.State))
-            .ToList();
+            .Where(file => statuses.Contains(file.State));
 
-    public static List<StatusEntry> GetAllAlteredFiles(this RepositoryStatus status) =>
+    public static IEnumerable<StatusEntry> GetAllAlteredFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
 
-    public static List<StatusEntry> GetCreatedFiles(this RepositoryStatus status) =>
+    public static IEnumerable<StatusEntry> GetCreatedFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.NewInIndex);
 
-    public static List<StatusEntry> GetModifiedFiles(this RepositoryStatus status) =>
+    public static IEnumerable<StatusEntry> GetModifiedFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.ModifiedInIndex);
 
-    public static List<StatusEntry> GetDeletedFiles(this RepositoryStatus status) =>
+    public static IEnumerable<StatusEntry> GetDeletedFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.DeletedFromIndex);
 
-    public static List<StatusEntry> GetRenamedFiles(this RepositoryStatus status) =>
+    public static IEnumerable<StatusEntry> GetRenamedFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.RenamedInIndex);
 
     /* List<StatusEntry> Extensions */
 
-    public static List<StatusEntry> WithFileExtensions(this List<StatusEntry> entries, params string[] extensions) =>
-        entries
-            .Where(entry => extensions.Contains(entry.GetFileExtension().ToLowerInvariant()))
-            .ToList();
+    public static IEnumerable<StatusEntry> WithFileExtensions(this IEnumerable<StatusEntry> entries, params string[] extensions) =>
+        entries.Where(entry => extensions.Contains(entry.GetFileExtension().ToLowerInvariant()));
 
-    public static IEnumerable<string> ToFileTerms(this List<StatusEntry> entries) =>
+    public static IEnumerable<string> ToFileTerms(this IEnumerable<StatusEntry> entries) =>
         entries
             .Select(entry => entry.GetFileName().CamelCaseToKebabCase())
             .SelectMany(n => n.Split("-"));
 
-    public static List<string> WithFileTerms(this List<StatusEntry> entries, params string[] terms) =>
+    public static IEnumerable<string> WithFileTerms(this IEnumerable<StatusEntry> entries, params string[] terms) =>
         entries
             .ToFileTerms()
-            .Where(term => terms.Contains(term))
-            .ToList();
+            .Where(term => terms.Contains(term));
 
-    public static List<StatusEntry> GetFiles(this List<StatusEntry> entries, params FileStatus[] statuses) =>
-        entries
-            .Where(entry => statuses.Contains(entry.State))
-            .ToList();
+    public static IEnumerable<StatusEntry> GetFiles(this IEnumerable<StatusEntry> entries, params FileStatus[] statuses) =>
+        entries.Where(entry => statuses.Contains(entry.State));
 
-    public static List<StatusEntry> GetDeletedFiles(this List<StatusEntry> entries) =>
+    public static IEnumerable<StatusEntry> GetDeletedFiles(this IEnumerable<StatusEntry> entries) =>
         entries.GetFiles(FileStatus.DeletedFromIndex);
 
     /* StatusEntry Extensions */
