@@ -22,7 +22,7 @@ If you've updated/created/deleted/renamed a number of files which include a comm
 
 `chore: common > updated common-file, deleted un-common-file, renamed common-ish-file`
 
-If you're on a branch matching the regex `[a-zA-Z]+\\-[0-9]+` such as TICKET-1234:
+If you're on a branch matching the regex `[a-zA-Z]+\-[0-9]+` such as TICKET-1234:
 
 `feat(ticket-1234): updated a-file-on-this-branch`
 
