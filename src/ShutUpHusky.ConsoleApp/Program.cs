@@ -22,7 +22,6 @@ command.AddValidator(result => {
 });
 
 command.SetHandler<bool, string>((noWindow, repoLocation) => {
-    Console.WriteLine(repoLocation);
     var repo = new Repository(repoLocation);
 
     var commitMessage = new CommitMessageAssembler().Assemble(repo);
