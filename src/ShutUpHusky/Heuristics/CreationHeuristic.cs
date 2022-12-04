@@ -14,12 +14,7 @@ internal class CreationHeuristic : IHeuristic {
         var patchCount = patchesOrderedByDiff.Count;
 
         if (patchCount == 0)
-            return new HeuristicResult[] {
-                new() {
-                    Priority = Constants.NotAPriority,
-                    Value = string.Empty,
-                },
-            };
+            return Array.Empty<HeuristicResult>();
 
         var rtn = new HeuristicResult[patchCount];
 

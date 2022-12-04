@@ -62,13 +62,7 @@ public class RenamingHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
-                Priority = Constants.NotAPriority,
-                Value = string.Empty,
-                After = null,
-            },
-        });
+        result.Should().HaveCount(0);
     }
 
     [Test]

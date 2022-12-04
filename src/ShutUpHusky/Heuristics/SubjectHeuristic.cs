@@ -8,12 +8,7 @@ internal class SubjectHeuristic : IHeuristic {
         var stagedFiles = repo.GetAllAlteredFiles().ToList();
 
         if (stagedFiles.Count == 0)
-            return new HeuristicResult[] {
-                new() {
-                    Priority = Constants.NotAPriority,
-                    Value = string.Empty,
-                },
-            };
+            return Array.Empty<HeuristicResult>();
 
         var fileTerms = stagedFiles.ToFileTerms();
 
@@ -26,12 +21,7 @@ internal class SubjectHeuristic : IHeuristic {
             .First();
 
         if (mostCommonTerm.Value == 1)
-            return new HeuristicResult[] {
-                new() {
-                    Priority = Constants.NotAPriority,
-                    Value = string.Empty,
-                },
-            };
+            return Array.Empty<HeuristicResult>();
 
         return new HeuristicResult[] {
             new() {
