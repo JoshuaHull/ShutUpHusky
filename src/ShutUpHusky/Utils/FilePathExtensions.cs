@@ -2,7 +2,7 @@ namespace ShutUpHusky.Utils;
 
 internal static class FilePathExtensions {
     public static string GetFileName(this string filePath) {
-        var fullFileName = filePath.Split("/").Last();
+        var fullFileName = Path.GetFileName(filePath);
 
         if (fullFileName.StartsWith("."))
             return fullFileName;
@@ -11,11 +11,11 @@ internal static class FilePathExtensions {
     }
 
     public static string GetFileExtension(this string filePath) {
-        var fullFileName = filePath.Split("/").Last();
+        var ext = Path.GetExtension(filePath);
 
-        if (fullFileName.StartsWith("."))
-            fullFileName = fullFileName[1..];
-
-        return fullFileName.Split(".").LastOrDefault() ?? string.Empty;
+        return ext.Length switch {
+            0 => string.Empty,
+            _ => ext[1..],
+        };
     }
 }
