@@ -4,7 +4,7 @@ using Moq;
 namespace ShutUpHusky.TestSdk.Mocks;
 
 public class MockStatusEntry : Mock<StatusEntry> {
-    public string FilePath { get; set; }
+    public string FilePath { get; set; } = string.Empty;
     public FileStatus State { get; set; }
 
     public MockStatusEntry() {

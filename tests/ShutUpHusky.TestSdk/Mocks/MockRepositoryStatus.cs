@@ -4,8 +4,8 @@ using Moq;
 namespace ShutUpHusky.TestSdk.Mocks;
 
 public class MockRepositoryStatus: Mock<RepositoryStatus> {
-    public IEnumerable<StatusEntry> Staged { get; set; }
-    public IEnumerable<StatusEntry> StatusEntries { get; set; }
+    public IEnumerable<StatusEntry> Staged { get; set; } = Array.Empty<StatusEntry>();
+    public IEnumerable<StatusEntry> StatusEntries { get; set; } = Array.Empty<StatusEntry>();
 
     public MockRepositoryStatus() {
         SetupGet(e => e.Staged).Returns(() => Staged);
