@@ -248,4 +248,218 @@ public class RenamingHeuristicTests
             },
         }).And.BeInDescendingOrder(h => h.Priority);
     }
+
+    [Test]
+    public void ShouldReturnMovedLabel_ForMovedFile_WithNoLinesChanged() {
+        // Arrange
+        var movedFile = new MockPatch {
+            LinesAdded = 0,
+            LinesDeleted = 0,
+        };
+
+        var renamedFile = new MockPatch {
+            LinesAdded = 100,
+            LinesDeleted = 0,
+        };
+
+        var repo = new MockRepository {
+            Head = new MockBranch {
+                Tip = new MockCommit {
+                    Tree = new MockTree {
+                    }.Object,
+                }.Object,
+            }.Object,
+            Status = new MockRepositoryStatus {
+                StatusEntries = new[] {
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/renamedFile",
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/movedFile",
+                        HeadToIndexRenameDetails = new MockRenameDetails {
+                            OldFilePath = "oldFiles/movedFile",
+                            NewFilePath = "files/movedFile",
+                        }.Object,
+                    }.Object,
+                },
+            }.Object,
+            Diff = new MockDiff()
+                .SeedPatch("files/movedFile", movedFile.Object)
+                .SeedPatch("files/renamedFile", renamedFile.Object)
+                .Object
+        };
+
+        // Act
+        var result = Heuristic.Analyse(repo.Object);
+
+        // Assert
+        result.Should().BeEquivalentTo(new List<HeuristicResult> {
+            new() {
+                Priority = Constants.MediumPriorty,
+                Value = "moved moved-file",
+                After = ", ",
+            },
+            new() {
+                Priority = Constants.LowPriorty,
+                Value = "renamed renamed-file",
+                After = ", ",
+            },
+        });
+    }
+
+    [Test]
+    public void ShouldReturnMovedLabel_ForSingleMovedFile() {
+        // Arrange
+        var singleMovedFile = new MockPatch {
+            LinesAdded = 100,
+            LinesDeleted = 0,
+        };
+
+        var renamedFile = new MockPatch {
+            LinesAdded = 50,
+            LinesDeleted = 50,
+        };
+
+        var repo = new MockRepository {
+            Head = new MockBranch {
+                Tip = new MockCommit {
+                    Tree = new MockTree {
+                    }.Object,
+                }.Object,
+            }.Object,
+            Status = new MockRepositoryStatus {
+                StatusEntries = new[] {
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/renamedFile",
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/singleMovedFile",
+                        HeadToIndexRenameDetails = new MockRenameDetails {
+                            OldFilePath = "oldFiles/singleMovedFile",
+                            NewFilePath = "files/singleMovedFile",
+                        }.Object,
+                    }.Object,
+                },
+            }.Object,
+            Diff = new MockDiff()
+                .SeedPatch("files/renamedFile", renamedFile.Object)
+                .SeedPatch("files/singleMovedFile", singleMovedFile.Object)
+                .Object
+        };
+
+        // Act
+        var result = Heuristic.Analyse(repo.Object);
+
+        // Assert
+        result.Should().BeEquivalentTo(new List<HeuristicResult> {
+            new() {
+                Priority = Constants.MediumPriorty,
+                Value = "moved single-moved-file",
+                After = ", ",
+            },
+        });
+    }
+
+    [Test]
+    public void ShouldReturnMovedLabel_ForEachMovedFile_WithDescendingPriority()
+    {
+        // Arrange
+        var simplyRenamedFile = new MockPatch {
+            LinesAdded = 10,
+            LinesDeleted = 0,
+        };
+
+        var mediumMovedFile = new MockPatch {
+            LinesAdded = 50,
+            LinesDeleted = 0,
+        };
+
+        var largeMovedFile = new MockPatch {
+            LinesAdded = 100,
+            LinesDeleted = 0,
+        };
+
+        var modifiedAndMovedFile = new MockPatch {
+            LinesAdded = 10,
+            LinesDeleted = 20,
+        };
+
+        var repo = new MockRepository {
+            Head = new MockBranch {
+                Tip = new MockCommit {
+                    Tree = new MockTree {
+                    }.Object,
+                }.Object,
+            }.Object,
+            Status = new MockRepositoryStatus {
+                StatusEntries = new[] {
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/simplyRenamedFile",
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/mediumMovedFile",
+                        HeadToIndexRenameDetails = new MockRenameDetails {
+                            OldFilePath = "oldFiles/mediumMovedFile",
+                            NewFilePath = "files/mediumMovedFile",
+                        }.Object,
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/largeMovedFile",
+                        HeadToIndexRenameDetails = new MockRenameDetails {
+                            OldFilePath = "oldFiles/largeMovedFile",
+                            NewFilePath = "files/largeMovedFile",
+                        }.Object,
+                    }.Object,
+                    new MockStatusEntry {
+                        State = FileStatus.RenamedInIndex,
+                        FilePath = "files/modifiedAndMovedFile",
+                        HeadToIndexRenameDetails = new MockRenameDetails {
+                            OldFilePath = "oldFiles/modifiedAndMovedFile",
+                            NewFilePath = "files/modifiedAndMovedFile",
+                        }.Object,
+                    }.Object,
+                },
+            }.Object,
+            Diff = new MockDiff()
+                .SeedPatch("files/simplyRenamedFile", simplyRenamedFile.Object)
+                .SeedPatch("files/mediumMovedFile", mediumMovedFile.Object)
+                .SeedPatch("files/largeMovedFile", largeMovedFile.Object)
+                .SeedPatch("files/modifiedAndMovedFile", modifiedAndMovedFile.Object)
+                .Object,
+        };
+
+        // Act
+        var result = Heuristic.Analyse(repo.Object);
+
+        // Assert
+        result.Should().BeEquivalentTo(new List<HeuristicResult> {
+            new() {
+                Priority = Constants.MediumPriorty,
+                Value = "moved large-moved-file",
+                After = ", ",
+            },
+            new() {
+                Priority = 3,
+                Value = "moved medium-moved-file",
+                After = ", ",
+            },
+            new() {
+                Priority = Constants.LowPriorty,
+                Value = "moved modified-and-moved-file",
+                After = ", ",
+            },
+            new() {
+                Priority = Constants.LowPriorty,
+                Value = "renamed simply-renamed-file",
+                After = ", ",
+            },
+        }).And.BeInDescendingOrder(h => h.Priority);
+    }
 }
