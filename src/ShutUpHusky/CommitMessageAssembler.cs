@@ -70,8 +70,6 @@ public class CommitMessageAssembler {
         public int Length => _messageBuilder.Length;
 
         public override string ToString() =>
-            HasAppliedSeparator
-                ? _messageBuilder.ToString()
-                : AddMessageSnippet(Constants.DefaultCommitMessageSnippet)._messageBuilder.ToString();
+            (HasAppliedSeparator ? this : AddMessageSnippet(Constants.DefaultCommitMessageSnippet))._messageBuilder.ToString();
     }
 }
