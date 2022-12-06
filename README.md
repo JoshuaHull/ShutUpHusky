@@ -12,6 +12,15 @@ Stage your changes as you normally would, then:
 
 `dotnet run -- --repo C:\Users\You\SomeRepo\`
 
+If you want to commit directly without waiting for hooks to run:
+
+`dotnet run -- --repo C:\Users\You\SomeRepo\ --in-process true --name "Your Name" --email "you@mail.com"`
+
+Less meaningful commit message snippets are discarded if the commit title would exceed 72 characters.  
+If you want to include discarded commit message snippets in the body:
+
+`dotnet run -- --repo C:\Users\You\SomeRepo\ --enable-body true`
+
 ## Features
 
 If you've updated `SomeFile.ts`, your commit message will read:
