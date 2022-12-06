@@ -56,7 +56,7 @@ public class CommitMessageAssembler {
         private string NextSeparator = string.Empty;
 
         public bool CanAddSnippetToTitle(string snippet) =>
-            Length + NextSeparator.Length + snippet.Length <= Constants.MaxCommitTitleLength;
+            _titleBuilder.Length + NextSeparator.Length + snippet.Length <= Constants.MaxCommitTitleLength;
 
         private PendingCommitMessage ApplySeparator() {
             if (NextSeparator == string.Empty)
@@ -83,8 +83,6 @@ public class CommitMessageAssembler {
             NextSeparator = separator;
             return this;
         }
-
-        public int Length => _titleBuilder.Length;
 
         public override string ToString() {
             var rtn = new StringBuilder()
