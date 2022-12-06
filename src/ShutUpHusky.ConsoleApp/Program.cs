@@ -55,7 +55,7 @@ command.SetHandler((noWindow, inProcess, enableBody, name, email, repoLocation) 
     var repo = new Repository(repoLocation);
 
     var commitMessage = new CommitMessageAssembler(new() {
-        ShouldEnableBody = enableBody,
+        EnableBody = enableBody,
     }).Assemble(repo);
 
     Console.WriteLine("ShutUpHusky! Committing with message:");

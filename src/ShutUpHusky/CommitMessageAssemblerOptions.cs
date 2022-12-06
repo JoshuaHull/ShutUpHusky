@@ -1,5 +1,5 @@
 namespace ShutUpHusky;
 
 public record CommitMessageAssemblerOptions {
-    public bool ShouldEnableBody { get; init; }
+    public bool EnableBody { get; init; }
 }

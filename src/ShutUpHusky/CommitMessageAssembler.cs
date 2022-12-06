@@ -38,7 +38,7 @@ public class CommitMessageAssembler {
         var (h, hs) = (heuristicResults[0], heuristicResults[1..]);
 
         var canAddSnippetToTitle = commitMessage.CanAddSnippetToTitle(h.Value);
-        var canAddSnippetToBody = !canAddSnippetToTitle && _options.ShouldEnableBody;
+        var canAddSnippetToBody = !canAddSnippetToTitle && _options.EnableBody;
 
         if (canAddSnippetToTitle)
             return ApplyHeuristics(repo, hs, commitMessage.AddMessageSnippetToTitle(h.Value).WithNextSeparator(h.After ?? string.Empty));

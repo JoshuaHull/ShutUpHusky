@@ -164,7 +164,7 @@ public class CommitMessageAssemblerTests {
         };
 
         var assembler = new CommitMessageAssembler(new() {
-            ShouldEnableBody = true,
+            EnableBody = true,
         });
 
         // Act
