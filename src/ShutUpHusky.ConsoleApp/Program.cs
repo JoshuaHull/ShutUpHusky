@@ -23,12 +23,17 @@ var emailOption = new Option<string>("--email", "Email of the author of the comm
     Arity = ArgumentArity.ZeroOrOne,
 };
 
+var enableBodyOption = new Option<bool>("--enable-body", "Add any additional commit message snippets into the commit body rather than discarding them") {
+    Arity = ArgumentArity.ZeroOrOne,
+};
+
 var command = new RootCommand {
     noWindowOption,
     repoOption,
     inProcessOption,
     nameOption,
     emailOption,
+    enableBodyOption,
 };
 
 command.AddValidator(result => {
@@ -46,10 +51,12 @@ command.AddValidator(result => {
         result.ErrorMessage = "--email is required whenever --in-process is true";
 });
 
-command.SetHandler<bool, bool, string?, string?, string>((noWindow, inProcess, name, email, repoLocation) => {
+command.SetHandler((noWindow, inProcess, enableBody, name, email, repoLocation) => {
     var repo = new Repository(repoLocation);
 
-    var commitMessage = new CommitMessageAssembler().Assemble(repo);
+    var commitMessage = new CommitMessageAssembler(new() {
+        ShouldEnableBody = enableBody,
+    }).Assemble(repo);
 
     Console.WriteLine("ShutUpHusky! Committing with message:");
     Console.WriteLine(commitMessage);
@@ -71,6 +78,6 @@ command.SetHandler<bool, bool, string?, string?, string>((noWindow, inProcess, n
     var process = Process.Start(info);
 
     process?.WaitForExit();
-}, noWindowOption, inProcessOption, nameOption, emailOption, repoOption);
+}, noWindowOption, inProcessOption, enableBodyOption, nameOption, emailOption, repoOption);
 
 await command.InvokeAsync(args);
