@@ -1,7 +1,6 @@
-using LibGit2Sharp;
 using Moq;
 
-namespace ShutUpHusky.TestSdk.Mocks;
+namespace LibGit2Sharp.Mocks;
 
 public class MockPatch: Mock<Patch> {
     public int LinesAdded { get; set; }

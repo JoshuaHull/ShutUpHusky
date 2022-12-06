@@ -1,7 +1,7 @@
-using LibGit2Sharp;
+using System;
 using Moq;
 
-namespace ShutUpHusky.TestSdk.Mocks;
+namespace LibGit2Sharp.Mocks;
 
 public class MockRepository: Mock<IRepository> {
     public RepositoryStatus? Status { get; set; }

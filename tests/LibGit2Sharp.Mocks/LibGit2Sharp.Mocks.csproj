@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,11 +9,6 @@
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="Moq" Version="4.18.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../../src/ShutUpHusky/ShutUpHusky.csproj" />
-    <ProjectReference Include="../LibGit2Sharp.Mocks/LibGit2Sharp.Mocks.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 using LibGit2Sharp;
+using LibGit2Sharp.Mocks;
 using NUnit.Framework;
 using ShutUpHusky.Heuristics;
-using ShutUpHusky.TestSdk.Mocks;
 
 namespace ShutUpHusky.UnitTests.Heuristics;
 

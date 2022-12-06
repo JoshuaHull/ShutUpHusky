@@ -1,7 +1,8 @@
-using LibGit2Sharp;
+using System.Collections.Generic;
+using System.Linq;
 using Moq;
 
-namespace ShutUpHusky.TestSdk.Mocks;
+namespace LibGit2Sharp.Mocks;
 
 public class MockDiff: Mock<Diff> {
     private readonly Dictionary<string, Patch> _patches = new();

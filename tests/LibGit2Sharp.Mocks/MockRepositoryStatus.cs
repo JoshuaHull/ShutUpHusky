@@ -1,7 +1,8 @@
-using LibGit2Sharp;
+using System;
+using System.Collections.Generic;
 using Moq;
 
-namespace ShutUpHusky.TestSdk.Mocks;
+namespace LibGit2Sharp.Mocks;
 
 public class MockRepositoryStatus: Mock<RepositoryStatus> {
     public IEnumerable<StatusEntry> Staged { get; set; } = Array.Empty<StatusEntry>();

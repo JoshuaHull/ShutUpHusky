@@ -1,7 +1,7 @@
-using LibGit2Sharp;
+using System;
 using Moq;
 
-namespace ShutUpHusky.TestSdk.Mocks;
+namespace LibGit2Sharp.Mocks;
 
 public class MockStatusEntry : Mock<StatusEntry> {
     public string? FilePath { get; set; }
