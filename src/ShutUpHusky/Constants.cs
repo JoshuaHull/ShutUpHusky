@@ -8,6 +8,7 @@ internal static class Constants {
     public const int MaxCommitTitleLength = 72;
     public const double TypeOverrideThreshold = 0.5;
     public const string MatchTicket = "[a-zA-Z]+\\-[0-9]+";
+    public const string DefaultCommitMessageSnippet = "committed something";
 
     public static class FileExtensions {
         public const string Yaml = "yaml";
