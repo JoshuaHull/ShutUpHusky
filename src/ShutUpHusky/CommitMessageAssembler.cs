@@ -14,6 +14,12 @@ public class CommitMessageAssembler {
         new RenamingHeuristic(),
     };
 
+    private readonly CommitMessageAssemblerOptions _options;
+
+    public CommitMessageAssembler(CommitMessageAssemblerOptions? options = null) {
+        _options = options ?? new();
+    }
+
     public string Assemble(IRepository repo) {
         var heuristicResults = Heuristics
             .SelectMany(h => h.Analyse(repo))
@@ -31,34 +37,45 @@ public class CommitMessageAssembler {
 
         var (h, hs) = (heuristicResults[0], heuristicResults[1..]);
 
-        var shouldIncludeHeuristic = commitMessage.CanAddMessageSnippet(h.Value);
+        var canAddSnippetToTitle = commitMessage.CanAddSnippetToTitle(h.Value);
+        var canAddSnippetToBody = !canAddSnippetToTitle && _options.ShouldEnableBody;
 
-        if (!shouldIncludeHeuristic)
-            return ApplyHeuristics(repo, hs, commitMessage);
+        if (canAddSnippetToTitle)
+            return ApplyHeuristics(repo, hs, commitMessage.AddMessageSnippetToTitle(h.Value).WithNextSeparator(h.After ?? string.Empty));
 
-        return ApplyHeuristics(repo, hs, commitMessage.AddMessageSnippet(h.Value).WithNextSeparator(h.After ?? string.Empty));
+        if (canAddSnippetToBody)
+            return ApplyHeuristics(repo, hs, commitMessage.AddMessageSnippetToBody(h.Value));
+
+        return ApplyHeuristics(repo, hs, commitMessage);
     }
 
     private class PendingCommitMessage {
-        private readonly StringBuilder _messageBuilder = new();
+        private readonly StringBuilder _titleBuilder = new();
+        private readonly StringBuilder _bodyBuilder = new();
         private bool HasAppliedSeparator = false;
         private string NextSeparator = string.Empty;
 
-        public bool CanAddMessageSnippet(string snippet) =>
+        public bool CanAddSnippetToTitle(string snippet) =>
             Length + NextSeparator.Length + snippet.Length <= Constants.MaxCommitTitleLength;
 
         private PendingCommitMessage ApplySeparator() {
             if (NextSeparator == string.Empty)
                 return this;
 
-            _messageBuilder.Append(NextSeparator);
+            _titleBuilder.Append(NextSeparator);
             HasAppliedSeparator = true;
             return this;
         }
 
-        public PendingCommitMessage AddMessageSnippet(string snippet) {
+        public PendingCommitMessage AddMessageSnippetToTitle(string snippet) {
             ApplySeparator();
-            _messageBuilder.Append(snippet);
+            _titleBuilder.Append(snippet);
+            return this;
+        }
+
+        public PendingCommitMessage AddMessageSnippetToBody(string snippet) {
+            _bodyBuilder.Append(Constants.BodySeparator);
+            _bodyBuilder.Append(snippet);
             return this;
         }
 
@@ -67,9 +84,20 @@ public class CommitMessageAssembler {
             return this;
         }
 
-        public int Length => _messageBuilder.Length;
+        public int Length => _titleBuilder.Length;
 
-        public override string ToString() =>
-            (HasAppliedSeparator ? this : AddMessageSnippet(Constants.DefaultCommitMessageSnippet))._messageBuilder.ToString();
+        public override string ToString() {
+            var rtn = new StringBuilder()
+                .Append(_titleBuilder);
+
+            if (!HasAppliedSeparator)
+                rtn
+                    .Append(NextSeparator)
+                    .Append(Constants.DefaultCommitMessageSnippet);
+
+            return rtn
+                .Append(_bodyBuilder)
+                .ToString();
+        }
     }
 }
