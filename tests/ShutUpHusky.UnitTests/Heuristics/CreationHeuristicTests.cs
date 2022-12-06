@@ -109,7 +109,7 @@ public class CreationHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.HighPriorty,
+                Priority = Constants.HigherPriorty,
                 Value = "created single-created-file",
                 After = ", ",
             },
@@ -160,7 +160,7 @@ public class CreationHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.HighPriorty,
+                Priority = Constants.HigherPriorty,
                 Value = "created single-created-file",
                 After = ", ",
             },
@@ -232,17 +232,17 @@ public class CreationHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.HighPriorty,
+                Priority = Constants.HigherPriorty,
                 Value = "created large-created-file",
                 After = ", ",
             },
             new() {
-                Priority = 5,
+                Priority = 8,
                 Value = "created medium-created-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.NotAPriority,
+                Priority = Constants.LowPriorty,
                 Value = "created small-created-file",
                 After = ", ",
             },

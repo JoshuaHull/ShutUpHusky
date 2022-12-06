@@ -32,7 +32,7 @@ internal class RenamingHeuristic : IHeuristic {
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
             var commitMessageSnippet = statusEntriesByPatch[currentFile].ToMovedCommitMessageSnippet();
-            var priority = i.ToPriority(Constants.LowPriorty, Constants.MediumPriorty, patchCount);
+            var priority = i.ToPriority(Constants.LowPriorty, Constants.HighPriorty, patchCount);
 
             yield return new() {
                 Priority = priority,
@@ -57,7 +57,7 @@ internal class RenamingHeuristic : IHeuristic {
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
             var commitMessageSnippet = statusEntriesByPatch[currentFile].ToRenamedCommitMessageSnippet();
-            var priority = i.ToPriority(Constants.NotAPriority, Constants.LowPriorty, patchCount);
+            var priority = i.ToPriority(Constants.LowPriorty, Constants.MediumPriorty, patchCount);
 
             yield return new() {
                 Priority = priority,

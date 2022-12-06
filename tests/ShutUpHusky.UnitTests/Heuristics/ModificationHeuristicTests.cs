@@ -109,7 +109,7 @@ public class ModificationHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "updated single-changed-file",
                 After = ", ",
             },
@@ -160,7 +160,7 @@ public class ModificationHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "updated single-changed-file",
                 After = ", ",
             },
@@ -232,17 +232,17 @@ public class ModificationHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "updated most-changed-file",
                 After = ", ",
             },
             new() {
-                Priority = 0.5,
+                Priority = 3,
                 Value = "updated mildly-changed-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.NotAPriority,
+                Priority = Constants.LowPriorty,
                 Value = "updated least-changed-file",
                 After = ", ",
             },

@@ -21,7 +21,7 @@ internal class DeletionHeuristic : IHeuristic {
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
             var commitMessageSnippet = statusEntriesByPatch[currentFile].ToDeletedCommitMessageSnippet();
-            var priority = i.ToPriority(Constants.NotAPriority, Constants.MediumPriorty, patchCount);
+            var priority = i.ToPriority(Constants.LowPriorty, Constants.HighPriorty, patchCount);
 
             rtn[i] = new() {
                 Priority = priority,

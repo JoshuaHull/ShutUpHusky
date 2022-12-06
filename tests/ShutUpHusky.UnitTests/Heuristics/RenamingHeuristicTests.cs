@@ -109,7 +109,7 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "renamed single-renamed-file",
                 After = ", ",
             },
@@ -160,7 +160,7 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "renamed single-renamed-file",
                 After = ", ",
             },
@@ -232,17 +232,17 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "renamed large-renamed-file",
                 After = ", ",
             },
             new() {
-                Priority = 0.5,
+                Priority = 3,
                 Value = "renamed medium-renamed-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.NotAPriority,
+                Priority = Constants.LowPriorty,
                 Value = "renamed small-renamed-file",
                 After = ", ",
             },
@@ -297,12 +297,12 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.MediumPriorty,
+                Priority = Constants.HighPriorty,
                 Value = "moved moved-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "renamed renamed-file",
                 After = ", ",
             },
@@ -357,7 +357,7 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.MediumPriorty,
+                Priority = Constants.HighPriorty,
                 Value = "moved single-moved-file",
                 After = ", ",
             },
@@ -441,12 +441,12 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.MediumPriorty,
+                Priority = Constants.HighPriorty,
                 Value = "moved large-moved-file",
                 After = ", ",
             },
             new() {
-                Priority = 3,
+                Priority = 5.5,
                 Value = "moved medium-moved-file",
                 After = ", ",
             },
@@ -456,7 +456,7 @@ public class RenamingHeuristicTests
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.MediumPriorty,
                 Value = "renamed simply-renamed-file",
                 After = ", ",
             },
