@@ -37,12 +37,12 @@ command.AddValidator(result => {
 });
 
 command.AddValidator(result => {
-    if(result.GetValueForOption(inProcessOption) && result.GetValueForOption(nameOption) is null)
+    if (result.GetValueForOption(inProcessOption) && result.GetValueForOption(nameOption) is null)
         result.ErrorMessage = "--name is required whenever --in-process is true";
 });
 
 command.AddValidator(result => {
-    if(result.GetValueForOption(inProcessOption) && result.GetValueForOption(emailOption) is null)
+    if (result.GetValueForOption(inProcessOption) && result.GetValueForOption(emailOption) is null)
         result.ErrorMessage = "--email is required whenever --in-process is true";
 });
 
