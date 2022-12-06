@@ -75,4 +75,32 @@ public class CommitMessageAssemblerTests {
             "chore: file > created created-file, deleted deleted-file"
         );
     }
+
+    [Test]
+    public void ShouldCreateCommitMessage_WithDefaultMessageSnippet_WhenNoHeuristicsReturnResults() {
+        // Arrange
+        var repo = new MockRepository {
+            Head = new MockBranch {
+                Tip = new MockCommit {
+                    Tree = new MockTree {
+                    }.Object,
+                }.Object,
+                FriendlyName = "main",
+            }.Object,
+            Status = new MockRepositoryStatus {
+                StatusEntries = Array.Empty<StatusEntry>(),
+            }.Object,
+            Diff = new MockDiff().Object,
+        };
+
+        var assembler = new CommitMessageAssembler();
+
+        // Act
+        var result = assembler.Assemble(repo.Object);
+
+        // Assert
+        result.Should().Be(
+            $"chore: {Constants.DefaultCommitMessageSnippet}"
+        );
+    }
 }

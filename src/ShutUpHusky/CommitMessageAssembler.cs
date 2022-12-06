@@ -1,3 +1,4 @@
+using System.Text;
 using LibGit2Sharp;
 using ShutUpHusky.Heuristics;
 
@@ -20,20 +21,57 @@ public class CommitMessageAssembler {
             .OrderByDescending(h => h.Priority)
             .ToArray();
 
-        return ApplyHeuristics(repo, heuristicResults, string.Empty, string.Empty);
+        return ApplyHeuristics(repo, heuristicResults, new PendingCommitMessage())
+            .ToString();
     }
 
-    private string ApplyHeuristics(IRepository repo, HeuristicResult[] heuristicResults, string commitMessage, string separator) {
-        if (heuristicResults.Length == 0 || commitMessage.Length + separator.Length >= Constants.MaxCommitTitleLength)
+    private PendingCommitMessage ApplyHeuristics(IRepository repo, HeuristicResult[] heuristicResults, PendingCommitMessage commitMessage) {
+        if (heuristicResults.Length == 0)
             return commitMessage;
 
         var (h, hs) = (heuristicResults[0], heuristicResults[1..]);
 
-        var shouldIncludeHeuristic = commitMessage.Length + separator.Length + h.Value.Length <= Constants.MaxCommitTitleLength;
+        var shouldIncludeHeuristic = commitMessage.CanAddMessageSnippet(h.Value);
 
         if (!shouldIncludeHeuristic)
-            return ApplyHeuristics(repo, hs, commitMessage, separator);
+            return ApplyHeuristics(repo, hs, commitMessage);
 
-        return ApplyHeuristics(repo, hs, $"{commitMessage}{separator}{h.Value}", h.After ?? "");
+        return ApplyHeuristics(repo, hs, commitMessage.AddMessageSnippet(h.Value).WithNextSeparator(h.After ?? string.Empty));
+    }
+
+    private class PendingCommitMessage {
+        private readonly StringBuilder _messageBuilder = new();
+        private bool HasAppliedSeparator = false;
+        private string NextSeparator = string.Empty;
+
+        public bool CanAddMessageSnippet(string snippet) =>
+            Length + NextSeparator.Length + snippet.Length <= Constants.MaxCommitTitleLength;
+
+        private PendingCommitMessage ApplySeparator() {
+            if (NextSeparator == string.Empty)
+                return this;
+
+            _messageBuilder.Append(NextSeparator);
+            HasAppliedSeparator = true;
+            return this;
+        }
+
+        public PendingCommitMessage AddMessageSnippet(string snippet) {
+            ApplySeparator();
+            _messageBuilder.Append(snippet);
+            return this;
+        }
+
+        public PendingCommitMessage WithNextSeparator(string separator) {
+            NextSeparator = separator;
+            return this;
+        }
+
+        public int Length => _messageBuilder.Length;
+
+        public override string ToString() =>
+            HasAppliedSeparator
+                ? _messageBuilder.ToString()
+                : AddMessageSnippet(Constants.DefaultCommitMessageSnippet)._messageBuilder.ToString();
     }
 }
