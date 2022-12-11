@@ -4,13 +4,22 @@ using ShutUpHusky.Utils;
 namespace ShutUpHusky.Heuristics;
 
 internal class SubjectHeuristic : IHeuristic {
+    private static readonly string[] ExcludedTerms = new[] {
+        "test",
+        "tests",
+        "spec",
+        "specs",
+    };
+
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var stagedFiles = repo.GetAllAlteredFiles().ToList();
 
         if (stagedFiles.Count == 0)
             return Array.Empty<HeuristicResult>();
 
-        var fileTerms = stagedFiles.ToFileTerms();
+        var fileTerms = stagedFiles
+            .ToFileTerms()
+            .Where(term => ExcludedTerms.Contains(term));
 
         var fileTermsByCount = fileTerms
             .GroupBy(t => t)

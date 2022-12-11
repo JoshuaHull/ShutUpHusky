@@ -13,6 +13,7 @@ public class SubjectHeuristicTests
     [TestCase("cats", "dogs", "fish", ExpectedResult = "")]
     [TestCase("really-cool-file.ts", "less-cool-file.ts", "cool.test.ts", ExpectedResult = "cool")]
     [TestCase("ReallyCoolFile.ts", "less-cool-file.ts", "ThisFile-IsCool.test.ts", ExpectedResult = "cool")]
+    [TestCase("SubjectHeuristicTests.cs", "TypeAndScopeHeuristicTests.cs", "CommitMessageAssemblerTests.ts", ExpectedResult = "heuristic")]
     public string ShouldChooseSubjectFromFileNames_WhenThereIsACommonTerm(
         string firstFileName, string secondFileName, string thirdFileName
     ) {
