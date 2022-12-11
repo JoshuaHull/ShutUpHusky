@@ -21,7 +21,7 @@ internal class ModificationHeuristic : IHeuristic {
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
             var commitMessageSnippet = statusEntriesByPatch[currentFile].ToUpdatedCommitMessageSnippet();
-            var priority = i.ToPriority(Constants.LowPriorty, Constants.MediumPriorty, patchCount);
+            var priority = i.ToPriority(Constants.LowPriority, Constants.MediumPriorty, patchCount);
 
             rtn[i] = new() {
                 Priority = priority,
