@@ -242,7 +242,7 @@ public class RenamingHeuristicTests
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.LowPriority,
                 Value = "renamed small-renamed-file",
                 After = ", ",
             },
@@ -451,7 +451,7 @@ public class RenamingHeuristicTests
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.LowPriority,
                 Value = "moved modified-and-moved-file",
                 After = ", ",
             },
