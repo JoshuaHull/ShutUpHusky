@@ -27,6 +27,10 @@ var enableBodyOption = new Option<bool>("--enable-body", "Add any additional com
     Arity = ArgumentArity.ZeroOrOne,
 };
 
+var experimentalOption = new Option<bool>("--experimental", "Enable experimental features") {
+    Arity = ArgumentArity.ZeroOrOne,
+};
+
 var command = new RootCommand {
     noWindowOption,
     repoOption,
@@ -34,6 +38,7 @@ var command = new RootCommand {
     nameOption,
     emailOption,
     enableBodyOption,
+    experimentalOption,
 };
 
 command.AddValidator(result => {
@@ -51,11 +56,12 @@ command.AddValidator(result => {
         result.ErrorMessage = "--email is required whenever --in-process is true";
 });
 
-command.SetHandler((noWindow, inProcess, enableBody, name, email, repoLocation) => {
+command.SetHandler((noWindow, inProcess, enableBody, name, email, repoLocation, experimental) => {
     var repo = new Repository(repoLocation);
 
     var commitMessage = new CommitMessageAssembler(new() {
         EnableBody = enableBody,
+        EnableExperimentalHeuristics = experimental,
     }).Assemble(repo);
 
     Console.WriteLine("ShutUpHusky! Committing with message:");
@@ -78,6 +84,6 @@ command.SetHandler((noWindow, inProcess, enableBody, name, email, repoLocation) 
     var process = Process.Start(info);
 
     process?.WaitForExit();
-}, noWindowOption, inProcessOption, enableBodyOption, nameOption, emailOption, repoOption);
+}, noWindowOption, inProcessOption, enableBodyOption, nameOption, emailOption, repoOption, experimentalOption);
 
 await command.InvokeAsync(args);
