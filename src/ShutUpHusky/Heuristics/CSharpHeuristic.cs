@@ -9,67 +9,64 @@ namespace ShutUpHusky.Heuristics;
 // https://arxiv.org/pdf/1805.03989.pdf
 // https://github.com/lancopku/Global-Encoding
 internal class CSharpHeuristic : IHeuristic {
+    private readonly string[] TokenScoreboardIgnoredTokens = new[] {
+        "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue",
+        "decimal", "default", "delegate", "do", "double", "else", "enum", "event", "explicit", "extern", "false", "finally",
+        "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock", "long",
+        "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public",
+        "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct",
+        "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual",
+        "void", "volatile", "while", "=", "==", "[", "]", "|", ",", "+", "-",
+    };
+
+    private readonly string[] TokenScoreboardIgnoreLinesStartingWith = new[] {
+        "namespace",
+    };
+
+    private readonly string TokenizerSplitRegex =
+        """
+        [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bprotected\b|\binternal\b|\bget\b|\bset\b|\binit\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
+        """;
+
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
-        var files = repo
-            .GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex)
-            .ToList();
+        var files = repo.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex);
+        var cSharpExtensions = new[] { "cs" };
+        var cSharpFiles = files.Where(file => cSharpExtensions.Contains(file.GetFileExtension()));
 
-        if (files.Count == 0)
-            return Array.Empty<HeuristicResult>();
+        return cSharpFiles
+            .Select(file => file.ToPatch(repo))
+            .SelectMany(AnalyseCSharpFile)
+            .ToArray();
+    }
 
-        var csharpExtensions = new[] { "cs" };
-        var csharpFiles = files
-            .Where(file => csharpExtensions.Contains(file.GetFileExtension()))
-            .ToList();
-
-        if (csharpFiles.Count == 0)
-            return Array.Empty<HeuristicResult>();
-
-        var statusEntriesByPatch = csharpFiles.MapPatchToStatusEntry(repo);
-
+    private IEnumerable<HeuristicResult> AnalyseCSharpFile(Patch cSharpFile) {
         var patchParser = new PatchParser();
-        var changedLines = patchParser.Parse(statusEntriesByPatch.Keys.First());
+        var changedLines = patchParser.Parse(cSharpFile);
 
         var tokenizer = new Tokenizer(new() {
-            SplitRegex =
-                """
-                [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bprotected\b|\binternal\b|\bget\b|\bset\b|\binit\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
-                """,
+            SplitRegex = TokenizerSplitRegex,
         });
         var tokenized = tokenizer.Tokenize(changedLines).ToList();
 
         var scorboard = new TokenScoreboard(new() {
-            IgnoredTokens = new[] {
-                "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue",
-                "decimal", "default", "delegate", "do", "double", "else", "enum", "event", "explicit", "extern", "false", "finally",
-                "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock", "long",
-                "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public",
-                "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct",
-                "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual",
-                "void", "volatile", "while", "=", "==", "[", "]", "|", ",", "+", "-",
-            },
-            IgnoreLinesStartingWithToken = new[] {
-                "namespace",
-            },
+            IgnoredTokens = TokenScoreboardIgnoredTokens,
+            IgnoreLinesStartingWithToken = TokenScoreboardIgnoreLinesStartingWith,
         });
         scorboard.AddAll(tokenized);
 
         var highestScoringLines = scorboard.HighestScoringLines().ToArray();
         var lineCount = highestScoringLines.Length;
-        var rtn = new HeuristicResult[lineCount];
 
         for (var i = 0; i < lineCount; i += 1) {
             var line = highestScoringLines[i];
             var commitMessageSnippet = line.ToString();
             var priority = i.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, lineCount);
 
-            rtn[i] = new() {
+            yield return new() {
                 Priority = priority,
                 Value = commitMessageSnippet,
                 After = ", ",
             };
         }
-
-        return rtn;
     }
 }
