@@ -36,6 +36,10 @@ internal static class LibGit2SharpExtensions {
             .RetrieveStatus(new StatusOptions())
             .GetRenamedFiles();
 
+    public static IEnumerable<StatusEntry> GetFiles(this IRepository repo, params FileStatus[] statuses) =>
+        repo.RetrieveStatus(new StatusOptions())
+            .GetFiles(statuses);
+
     /* RepositoryStatus extensions */
 
     public static IEnumerable<StatusEntry> GetFiles(this RepositoryStatus status, params FileStatus[] statuses) =>
