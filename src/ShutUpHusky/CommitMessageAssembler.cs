@@ -22,6 +22,13 @@ public class CommitMessageAssembler {
 
     public string Assemble(IRepository repo) {
         var heuristicResults = Heuristics
+            .Union(_options.EnableExperimentalHeuristics ?
+                new IHeuristic[] {
+                    new TypescriptHeuristic(),
+                    new CSharpHeuristic(),
+                }
+                : Array.Empty<IHeuristic>()
+            )
             .SelectMany(h => h.Analyse(repo))
             .Where(h => h.Priority > Constants.NotAPriority)
             .OrderByDescending(h => h.Priority)
