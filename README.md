@@ -55,6 +55,26 @@ You can scroll through this repo's commits for other examples. All but the first
 
 Commits prefixed with `feat(rand-1234):` are from a previous version, later versions do not generate random scopes.
 
+## Experimental
+
+To enable experimental features:
+
+`dotnet run -- --repo C:\Users\You\SomeRepo\ --experimental true`
+
+The current experimental features are:
+* CSharpHeuristic.cs
+* TypescriptHeuristic.cs
+
+ShutUpHusky will attempt to understand your typescript and csharp code, and write a more useful commit message
+corresponding to what you've changed. This feature is by no means perfect and sometimes results in strange commit
+messages such as:
+
+`test: created typescript-heuristic-tests, added After = , ,, added ,` (248a530887b544fde6f74d3aa76b0268d503a596).
+
+However, the messages are often quite handy. For example:
+
+`chore: updated constants, added const int LanguageSpecificPriority = 3` (3c78e7bf2a79b1468799d9af2c1079d463b0f7c2).
+
 ## License
 
 MIT
