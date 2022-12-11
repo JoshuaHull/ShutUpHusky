@@ -19,8 +19,8 @@ internal record OneLineOfTokens {
             (0, _, _) => string.Empty,
             (1, _, _) => $"changed {Tokens[0]}",
             (_, 0, 0) => $"changed {string.Join(" ", Tokens)}",
-            (_, 0, _) => $"changed {string.Join(" ", AfterTokens)}",
-            (_, _, 0) => $"changed {string.Join(" ", BeforeTokens)}",
+            (_, 0, _) => $"added {string.Join(" ", AfterTokens)}",
+            (_, _, 0) => $"removed {string.Join(" ", BeforeTokens)}",
             (_, _, _) => $"replaced {string.Join(" ", BeforeTokens)} with {string.Join(" ", AfterTokens)}",
         };
 }
