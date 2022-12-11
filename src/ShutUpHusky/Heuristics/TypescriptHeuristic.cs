@@ -33,7 +33,7 @@ internal class TypescriptHeuristic : IHeuristic {
         var tokenizer = new Tokenizer(new() {
             SplitRegex =
                 """
-                [\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bget\b|\bset\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
+                [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bget\b|\bset\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
                 """,
         });
         var tokenized = tokenizer.Tokenize(changedLines).ToList();
@@ -43,7 +43,7 @@ internal class TypescriptHeuristic : IHeuristic {
                 "const", "import", "export", "interface", "class", "type", "var", "function", "let", "break", "continue", "debugger",
                 "do", "try", "finally", "catch", "instanceof", "return", "void", "case", "default", "if", "for", "else", "while",
                 "typeof", "delete", "enum", "true", "false", "in", "null", "undefined", "with", "satisfies", "as", "public", "private",
-                "implements", "extends", "package", "static", "protected", "yield", "=", "==", "==="
+                "implements", "extends", "package", "static", "protected", "yield", "=", "==", "===", "[", "]", "|",
             },
             IgnoreLinesStartingWithToken = new[] {
                 "export", "import"
@@ -58,7 +58,7 @@ internal class TypescriptHeuristic : IHeuristic {
         for (var i = 0; i < lineCount; i += 1) {
             var line = highestScoringLines[i];
             var commitMessageSnippet = line.ToString();
-            var priority = i.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, lineCount);
+            var priority = i.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, lineCount);
 
             rtn[i] = new() {
                 Priority = priority,
