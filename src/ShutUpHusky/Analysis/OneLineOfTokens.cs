@@ -15,9 +15,12 @@ internal record OneLineOfTokens {
         };
 
     private string ToReplacedString() =>
-        Tokens.Length switch {
-            0 => string.Empty,
-            1 => $"changed {Tokens[0]}",
-            _ => $"replaced {string.Join(" ", BeforeTokens)} with {string.Join(" ", AfterTokens)}",
+        (Tokens.Length, BeforeTokens.Length, AfterTokens.Length) switch {
+            (0, _, _) => string.Empty,
+            (1, _, _) => $"changed {Tokens[0]}",
+            (_, 0, 0) => $"changed {string.Join(" ", Tokens)}",
+            (_, 0, _) => $"changed {string.Join(" ", AfterTokens)}",
+            (_, _, 0) => $"changed {string.Join(" ", BeforeTokens)}",
+            (_, _, _) => $"replaced {string.Join(" ", BeforeTokens)} with {string.Join(" ", AfterTokens)}",
         };
 }
