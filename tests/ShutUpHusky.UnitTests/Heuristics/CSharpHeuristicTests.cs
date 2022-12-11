@@ -75,7 +75,7 @@ public class CSharpHeuristicTests
                 Value = "added string wowStatement = wowow",
                 After = ", ",
             },
-        });
+        }).And.BeInDescendingOrder(r => r.Priority);
     }
 
     [Test]
@@ -152,6 +152,6 @@ public class CSharpHeuristicTests
                 Value = "added double Evaluate",
                 After = ", ",
             },
-        });
+        }).And.BeInDescendingOrder(r => r.Priority);
     }
 }
