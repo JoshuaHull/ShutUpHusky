@@ -61,17 +61,17 @@ public class TypescriptHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new HeuristicResult[] {
             new() {
-                Priority = 0.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 3),
+                Priority = 0.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 3),
                 Value = "replaced secondReplacedLine value 11 with unrelatedConstant [1, 2, 3]",
                 After = ", ",
             },
             new() {
-                Priority = 1.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 3),
+                Priority = 1.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 3),
                 Value = "replaced wow with wew",
                 After = ", ",
             },
             new() {
-                Priority = 2.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 3),
+                Priority = 2.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 3),
                 Value = "added const wowStatement = wowow",
                 After = ", ",
             },
@@ -128,27 +128,27 @@ public class TypescriptHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new HeuristicResult[] {
             new() {
-                Priority = 0.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 5),
+                Priority = 0.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
                 Value = "added evaluate => double = => value length / 3 00",
                 After = ", ",
             },
             new() {
-                Priority = 1.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 5),
+                Priority = 1.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
                 Value = "added addSnippet snippet string",
                 After = ", ",
             },
             new() {
-                Priority = 2.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 5),
+                Priority = 2.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
                 Value = "added value string",
                 After = ", ",
             },
             new() {
-                Priority = 3.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 5),
+                Priority = 3.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
                 Value = "added const trimmed = snippet trim",
                 After = ", ",
             },
             new() {
-                Priority = 4.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, 5),
+                Priority = 4.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
                 Value = "added class CommitMessage implements ICommitMessage",
                 After = ", ",
             },
