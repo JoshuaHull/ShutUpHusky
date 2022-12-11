@@ -242,7 +242,7 @@ public class ModificationHeuristicTests
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.LowPriority,
                 Value = "updated least-changed-file",
                 After = ", ",
             },
