@@ -242,7 +242,7 @@ public class DeletionHeuristicTests
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.LowPriority,
                 Value = "deleted small-deleted-file",
                 After = ", ",
             },
