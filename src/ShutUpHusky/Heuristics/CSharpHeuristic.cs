@@ -33,7 +33,7 @@ internal class CSharpHeuristic : IHeuristic {
         var tokenizer = new Tokenizer(new() {
             SplitRegex =
                 """
-                [\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bprotected\b|\binternal\b|\bget\b|\bset\b|\binit\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
+                [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bprotected\b|\binternal\b|\bget\b|\bset\b|\binit\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
                 """,
         });
         var tokenized = tokenizer.Tokenize(changedLines).ToList();
@@ -46,7 +46,7 @@ internal class CSharpHeuristic : IHeuristic {
                 "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public",
                 "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct",
                 "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual",
-                "void", "volatile", "while", "=", "==",
+                "void", "volatile", "while", "=", "==", "[", "]", "|",
             },
             IgnoreLinesStartingWithToken = new[] {
                 "namespace",
@@ -61,7 +61,7 @@ internal class CSharpHeuristic : IHeuristic {
         for (var i = 0; i < lineCount; i += 1) {
             var line = highestScoringLines[i];
             var commitMessageSnippet = line.ToString();
-            var priority = i.ToPriority(Constants.LowPriorty, Constants.LanguageSpecificPriority, lineCount);
+            var priority = i.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, lineCount);
 
             rtn[i] = new() {
                 Priority = priority,
