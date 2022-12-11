@@ -19,7 +19,7 @@ internal class SubjectHeuristic : IHeuristic {
 
         var fileTerms = stagedFiles
             .ToFileTerms()
-            .Where(term => ExcludedTerms.Contains(term));
+            .Where(term => !ExcludedTerms.Contains(term));
 
         var fileTermsByCount = fileTerms
             .GroupBy(t => t)
