@@ -242,7 +242,7 @@ public class CreationHeuristicTests
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriorty,
+                Priority = Constants.LowPriority,
                 Value = "created small-created-file",
                 After = ", ",
             },
