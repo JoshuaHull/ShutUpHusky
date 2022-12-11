@@ -33,7 +33,7 @@ internal class TypescriptHeuristic : IHeuristic {
         var tokenizer = new Tokenizer(new() {
             SplitRegex =
                 """
-                [\.\(\)\s'";:{}]
+                [\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bget\b|\bset\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
                 """,
         });
         var tokenized = tokenizer.Tokenize(changedLines).ToList();
@@ -44,6 +44,9 @@ internal class TypescriptHeuristic : IHeuristic {
                 "do", "try", "finally", "catch", "instanceof", "return", "void", "case", "default", "if", "for", "else", "while",
                 "typeof", "delete", "enum", "true", "false", "in", "null", "undefined", "with", "satisfies", "as", "public", "private",
                 "implements", "extends", "package", "static", "protected", "yield", "=", "==", "==="
+            },
+            IgnoreLinesStartingWithToken = new[] {
+                "export", "import"
             },
         });
         scorboard.AddAll(tokenized);
