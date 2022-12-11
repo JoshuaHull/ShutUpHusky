@@ -43,7 +43,7 @@ internal class TypescriptHeuristic : IHeuristic {
                 "const", "import", "export", "interface", "class", "type", "var", "function", "let", "break", "continue", "debugger",
                 "do", "try", "finally", "catch", "instanceof", "return", "void", "case", "default", "if", "for", "else", "while",
                 "typeof", "delete", "enum", "true", "false", "in", "null", "undefined", "with", "satisfies", "as", "public", "private",
-                "implements", "extends", "package", "static", "protected", "yield", "=", "==", "===", "[", "]", "|",
+                "implements", "extends", "package", "static", "protected", "yield", "=", "==", "===", "[", "]", "|", ",", "+", "-",
             },
             IgnoreLinesStartingWithToken = new[] {
                 "export", "import"
