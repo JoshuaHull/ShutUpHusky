@@ -17,7 +17,7 @@ internal class TypescriptHeuristic : IHeuristic {
     };
 
     private readonly string[] TokenScoreboardIgnoreLinesStartingWith = new[] {
-        "export", "import"
+        "export", "import", "/**", "**/", "* ", "//"
     };
 
     private readonly string TokenizerSplitRegex =
