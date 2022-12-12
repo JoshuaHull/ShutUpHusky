@@ -116,8 +116,14 @@ public class CreationHeuristicTests
         });
     }
 
-    [Test]
-    public void ShouldReturnCreatedLabel_ForSingleCreatedFile() {
+    [TestCase("singleCreatedFile", ExpectedResult = "created single-created-file")]
+    [TestCase("singleCreatedFile.ts", ExpectedResult = "created single-created-file")]
+    [TestCase("files/SingleCreatedFile.cs", ExpectedResult = "created single-created-file")]
+    [TestCase("singleCreatedFile.spec.ts", ExpectedResult = "created single-created-file tests")]
+    [TestCase("singleCreatedFile.specs.ts", ExpectedResult = "created single-created-file tests")]
+    [TestCase("singleCreatedFile.test.ts", ExpectedResult = "created single-created-file tests")]
+    [TestCase("singleCreatedFile.tests.ts", ExpectedResult = "created single-created-file tests")]
+    public string ShouldReturnCreatedLabel_ForSingleCreatedFile(string fileName) {
         // Arrange
         var singleCreatedFile = new MockPatch {
             LinesAdded = 50,
@@ -144,13 +150,13 @@ public class CreationHeuristicTests
                     }.Object,
                     new MockStatusEntry {
                         State = FileStatus.NewInIndex,
-                        FilePath = "files/singleCreatedFile",
+                        FilePath = fileName,
                     }.Object,
                 },
             }.Object,
             Diff = new MockDiff()
                 .SeedPatch("files/updatedFile", updatedFile.Object)
-                .SeedPatch("files/singleCreatedFile", singleCreatedFile.Object)
+                .SeedPatch(fileName, singleCreatedFile.Object)
                 .Object
         };
 
@@ -158,13 +164,7 @@ public class CreationHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
-                Priority = Constants.HigherPriorty,
-                Value = "created single-created-file",
-                After = ", ",
-            },
-        });
+        return result.Single().Value;
     }
 
     [Test]
