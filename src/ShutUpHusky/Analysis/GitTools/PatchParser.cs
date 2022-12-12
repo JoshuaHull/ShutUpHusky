@@ -15,7 +15,6 @@ internal class PatchParser {
             yield break;
 
         var diffLines = lines[4..];
-        var changedLines = new List<ChangedLine>();
 
         var i = 0;
         do {
