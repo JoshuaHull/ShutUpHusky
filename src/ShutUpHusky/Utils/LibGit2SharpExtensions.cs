@@ -1,4 +1,5 @@
 using LibGit2Sharp;
+using ShutUpHusky.Files;
 
 namespace ShutUpHusky.Utils;
 
@@ -86,27 +87,4 @@ internal static class LibGit2SharpExtensions {
 
     public static IEnumerable<StatusEntry> GetDeletedFiles(this IEnumerable<StatusEntry> entries) =>
         entries.GetFiles(FileStatus.DeletedFromIndex);
-
-    /* StatusEntry Extensions */
-
-    public static string GetFileExtension(this StatusEntry entry) =>
-        entry.FilePath.GetFileExtension();
-
-    public static string GetFileName(this StatusEntry entry) =>
-        entry.FilePath.GetFileName();
-
-    public static string ToCreatedCommitMessageSnippet(this StatusEntry statusEntry) =>
-        $"created {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
-
-    public static string ToDeletedCommitMessageSnippet(this StatusEntry statusEntry) =>
-        $"deleted {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
-
-    public static string ToRenamedCommitMessageSnippet(this StatusEntry statusEntry) =>
-        $"renamed {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
-
-    public static string ToMovedCommitMessageSnippet(this StatusEntry statusEntry) =>
-        $"moved {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
-
-    public static string ToUpdatedCommitMessageSnippet(this StatusEntry statusEntry) =>
-        $"updated {statusEntry.FilePath.GetFileName().CamelCaseToKebabCase()}";
 }
