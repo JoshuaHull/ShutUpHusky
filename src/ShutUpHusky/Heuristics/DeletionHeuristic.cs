@@ -1,4 +1,5 @@
 using LibGit2Sharp;
+using ShutUpHusky.Files;
 using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics;
@@ -20,7 +21,7 @@ internal class DeletionHeuristic : IHeuristic {
 
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
-            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToDeletedCommitMessageSnippet();
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Deleted);
             var priority = i.ToPriority(Constants.LowPriority, Constants.HighPriorty, patchCount);
 
             rtn[i] = new() {
