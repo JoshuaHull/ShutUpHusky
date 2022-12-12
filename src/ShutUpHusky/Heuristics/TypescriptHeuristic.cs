@@ -2,6 +2,7 @@ using LibGit2Sharp;
 using ShutUpHusky.Analysis.GitTools;
 using ShutUpHusky.Analysis.Statistics;
 using ShutUpHusky.Analysis.Tokenizing;
+using ShutUpHusky.Files;
 using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics;
