@@ -1,4 +1,5 @@
 using LibGit2Sharp;
+using ShutUpHusky.Files;
 using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics;
@@ -31,7 +32,7 @@ internal class RenamingHeuristic : IHeuristic {
 
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
-            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToMovedCommitMessageSnippet();
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Moved);
             var priority = i.ToPriority(Constants.LowPriority, Constants.HighPriorty, patchCount);
 
             yield return new() {
@@ -56,7 +57,7 @@ internal class RenamingHeuristic : IHeuristic {
 
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
-            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToRenamedCommitMessageSnippet();
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Renamed);
             var priority = i.ToPriority(Constants.LowPriority, Constants.MediumPriorty, patchCount);
 
             yield return new() {

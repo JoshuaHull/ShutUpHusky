@@ -116,8 +116,14 @@ public class RenamingHeuristicTests
         });
     }
 
-    [Test]
-    public void ShouldReturnRenamedLabel_ForSingleRenamedFile() {
+    [TestCase("singleRenamedFile", ExpectedResult = "renamed single-renamed-file")]
+    [TestCase("singleRenamedFile.ts", ExpectedResult = "renamed single-renamed-file")]
+    [TestCase("files/SingleRenamedFile.cs", ExpectedResult = "renamed single-renamed-file")]
+    [TestCase("singleRenamedFile.spec.ts", ExpectedResult = "renamed single-renamed-file tests")]
+    [TestCase("singleRenamedFile.specs.ts", ExpectedResult = "renamed single-renamed-file tests")]
+    [TestCase("singleRenamedFile.test.ts", ExpectedResult = "renamed single-renamed-file tests")]
+    [TestCase("singleRenamedFile.tests.ts", ExpectedResult = "renamed single-renamed-file tests")]
+    public string ShouldReturnRenamedLabel_ForSingleRenamedFile(string fileName) {
         // Arrange
         var singleRenamedFile = new MockPatch {
             LinesAdded = 100,
@@ -144,13 +150,13 @@ public class RenamingHeuristicTests
                     }.Object,
                     new MockStatusEntry {
                         State = FileStatus.RenamedInIndex,
-                        FilePath = "files/singleRenamedFile",
+                        FilePath = fileName,
                     }.Object,
                 },
             }.Object,
             Diff = new MockDiff()
                 .SeedPatch("files/updatedFile", updatedFile.Object)
-                .SeedPatch("files/singleRenamedFile", singleRenamedFile.Object)
+                .SeedPatch(fileName, singleRenamedFile.Object)
                 .Object
         };
 
@@ -158,13 +164,7 @@ public class RenamingHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
-                Priority = Constants.MediumPriorty,
-                Value = "renamed single-renamed-file",
-                After = ", ",
-            },
-        });
+        return result.Single().Value;
     }
 
     [Test]
@@ -309,8 +309,14 @@ public class RenamingHeuristicTests
         });
     }
 
-    [Test]
-    public void ShouldReturnMovedLabel_ForSingleMovedFile() {
+    [TestCase("oldFiles/singleMovedFile", "newFiles/singleMovedFile", ExpectedResult = "moved single-moved-file")]
+    [TestCase("oldFiles/singleMovedFile.ts", "newFiles/singleMovedFile.ts", ExpectedResult = "moved single-moved-file")]
+    [TestCase("oldFiles/SingleMovedFile.cs", "newFiles/SingleMovedFile.cs", ExpectedResult = "moved single-moved-file")]
+    [TestCase("oldFiles/singleMovedFile.spec.ts", "newFiles/singleMovedFile.spec.ts", ExpectedResult = "moved single-moved-file tests")]
+    [TestCase("oldFiles/singleMovedFile.specs.ts", "newFiles/singleMovedFile.specs.ts", ExpectedResult = "moved single-moved-file tests")]
+    [TestCase("oldFiles/singleMovedFile.test.ts", "newFiles/singleMovedFile.test.ts", ExpectedResult = "moved single-moved-file tests")]
+    [TestCase("oldFiles/singleMovedFile.tests.ts", "newFiles/singleMovedFile.tests.ts", ExpectedResult = "moved single-moved-file tests")]
+    public string ShouldReturnMovedLabel_ForSingleMovedFile(string fromFileName, string toFileName) {
         // Arrange
         var singleMovedFile = new MockPatch {
             LinesAdded = 100,
@@ -337,17 +343,17 @@ public class RenamingHeuristicTests
                     }.Object,
                     new MockStatusEntry {
                         State = FileStatus.RenamedInIndex,
-                        FilePath = "files/singleMovedFile",
+                        FilePath = toFileName,
                         HeadToIndexRenameDetails = new MockRenameDetails {
-                            OldFilePath = "oldFiles/singleMovedFile",
-                            NewFilePath = "files/singleMovedFile",
+                            OldFilePath = fromFileName,
+                            NewFilePath = toFileName,
                         }.Object,
                     }.Object,
                 },
             }.Object,
             Diff = new MockDiff()
                 .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/singleMovedFile", singleMovedFile.Object)
+                .SeedPatch(toFileName, singleMovedFile.Object)
                 .Object
         };
 
@@ -355,13 +361,7 @@ public class RenamingHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
-                Priority = Constants.HighPriorty,
-                Value = "moved single-moved-file",
-                After = ", ",
-            },
-        });
+        return result.Single().Value;
     }
 
     [Test]
