@@ -9,7 +9,7 @@ internal record OneLineOfTokens {
     public override string ToString() =>
         ChangeType switch {
             ChangeType.Added => $"added {string.Join(" ", Tokens)}",
-            ChangeType.Deleted => $"deleted {string.Join(" ", Tokens)}",
+            ChangeType.Deleted => $"removed {string.Join(" ", Tokens)}",
             ChangeType.Replaced => ToReplacedString(),
             _ => string.Join(" ", Tokens),
         };
