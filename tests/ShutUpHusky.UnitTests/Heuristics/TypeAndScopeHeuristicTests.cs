@@ -21,16 +21,14 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = branchName,
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
+            }
+            .WithSensibleDefaults()
+            .Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new StatusEntry[] {},
             }.Object,
             Diff = new MockDiff().Object
-        };
+        }.WithSensibleDefaults();
 
         // Act & Assert
         return Heuristic.Analyse(repo.Object).Single().Value;
@@ -55,16 +53,14 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = branchName,
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
+            }
+            .WithSensibleDefaults()
+            .Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new StatusEntry[] {},
             }.Object,
             Diff = new MockDiff().Object
-        };
+        }.WithSensibleDefaults();
 
         // Act & Assert
         return Heuristic.Analyse(repo.Object).Single().Value;
@@ -96,11 +92,9 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
+            }
+            .WithSensibleDefaults()
+            .Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -127,7 +121,7 @@ public class TypeAndScopeHeuristicTests {
                 .SeedPatch("files/firstDeletedFile", firstDeletedFile.Object)
                 .SeedPatch("files/secondDeletedFile", secondDeletedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -168,11 +162,9 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
+            }
+            .WithSensibleDefaults()
+            .Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -199,7 +191,7 @@ public class TypeAndScopeHeuristicTests {
                 .SeedPatch("files/firstCiFile.yaml", firstCiFile.Object)
                 .SeedPatch("files/secondCiFile.YAML", secondCiFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -240,11 +232,9 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
+            }
+            .WithSensibleDefaults()
+            .Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -271,7 +261,7 @@ public class TypeAndScopeHeuristicTests {
                 .SeedPatch("files/firstDocsFile.md", firstDocsFile.Object)
                 .SeedPatch("files/secondDocsFile.MD", secondDocsFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -312,11 +302,9 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
+            }
+            .WithSensibleDefaults()
+            .Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -343,7 +331,7 @@ public class TypeAndScopeHeuristicTests {
                 .SeedPatch("files/firstTestFile.cs", firstTestFile.Object)
                 .SeedPatch("files/secondTestFile.CS", secondTestFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -384,11 +372,9 @@ public class TypeAndScopeHeuristicTests {
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
+            }
+            .WithSensibleDefaults()
+            .Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -415,7 +401,7 @@ public class TypeAndScopeHeuristicTests {
                 .SeedPatch("files/testFile", testFile.Object)
                 .SeedPatch("files/unrelatedFile", unrelatedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
