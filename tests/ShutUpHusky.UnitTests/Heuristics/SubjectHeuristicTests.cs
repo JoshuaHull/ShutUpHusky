@@ -18,28 +18,26 @@ public class SubjectHeuristicTests
         string firstFileName, string secondFileName, string thirdFileName
     ) {
         // Arrange
-        var firstEntry = new MockStatusEntry {
-            FilePath = firstFileName,
-            State = FileStatus.ModifiedInIndex,
-        };
-        var secondEntry = new MockStatusEntry {
-            FilePath = secondFileName,
-            State = FileStatus.NewInIndex,
-        };
-        var thirdEntry = new MockStatusEntry {
-            FilePath = thirdFileName,
-            State = FileStatus.DeletedFromIndex,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new List<StatusEntry> {
-                    firstEntry.Object,
-                    secondEntry.Object,
-                    thirdEntry.Object,
-                },
-            }.Object,
-        };
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedStatusEntry(
+                new MockStatusEntry {
+                    FilePath = firstFileName,
+                    State = FileStatus.ModifiedInIndex,
+                }
+            )
+            .SeedStatusEntry(
+                new MockStatusEntry {
+                    FilePath = secondFileName,
+                    State = FileStatus.NewInIndex,
+                }
+            )
+            .SeedStatusEntry(
+                new MockStatusEntry {
+                    FilePath = thirdFileName,
+                    State = FileStatus.DeletedFromIndex,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
