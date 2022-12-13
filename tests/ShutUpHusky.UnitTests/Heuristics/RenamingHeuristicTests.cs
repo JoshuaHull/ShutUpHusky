@@ -213,7 +213,7 @@ public class RenamingHeuristicTests
                     HeadToIndexRenameDetails = new MockRenameDetails {
                         OldFilePath = "oldFiles/movedFile",
                         NewFilePath = "files/movedFile",
-                    }.Object,
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 0,
@@ -277,7 +277,7 @@ public class RenamingHeuristicTests
                     HeadToIndexRenameDetails = new MockRenameDetails {
                         OldFilePath = fromFileName,
                         NewFilePath = toFileName,
-                    }.Object,
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 100,
@@ -315,7 +315,7 @@ public class RenamingHeuristicTests
                     HeadToIndexRenameDetails = new MockRenameDetails {
                         OldFilePath = "oldFiles/mediumMovedFile",
                         NewFilePath = "files/mediumMovedFile",
-                    }.Object,
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 50,
@@ -329,7 +329,7 @@ public class RenamingHeuristicTests
                     HeadToIndexRenameDetails = new MockRenameDetails {
                         OldFilePath = "oldFiles/largeMovedFile",
                         NewFilePath = "files/largeMovedFile",
-                    }.Object,
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 100,
@@ -343,7 +343,7 @@ public class RenamingHeuristicTests
                     HeadToIndexRenameDetails = new MockRenameDetails {
                         OldFilePath = "oldFiles/modifiedAndMovedFile",
                         NewFilePath = "files/modifiedAndMovedFile",
-                    }.Object,
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 10,
