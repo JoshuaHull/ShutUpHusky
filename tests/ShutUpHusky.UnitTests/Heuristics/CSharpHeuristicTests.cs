@@ -36,12 +36,6 @@ public class CSharpHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -53,7 +47,7 @@ public class CSharpHeuristicTests
             Diff = new MockDiff()
                 .SeedPatch("src/modifiedFile.cs", modifiedCsharpFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -103,12 +97,6 @@ public class CSharpHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -120,7 +108,7 @@ public class CSharpHeuristicTests
             Diff = new MockDiff()
                 .SeedPatch("src/CommitMessage.cs", newCSharpFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -286,12 +274,6 @@ public class CSharpHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -303,7 +285,7 @@ public class CSharpHeuristicTests
             Diff = new MockDiff()
                 .SeedPatch("src/CommitMessage.cs", newCSharpFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
