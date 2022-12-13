@@ -29,12 +29,6 @@ public class RenamingHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -56,7 +50,7 @@ public class RenamingHeuristicTests
                 .SeedPatch("files/deletedFile", deletedFile.Object)
                 .SeedPatch("files/createdFile", createdFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -79,12 +73,6 @@ public class RenamingHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -101,7 +89,7 @@ public class RenamingHeuristicTests
                 .SeedPatch("files/singleRenamedFile", singleRenamedFile.Object)
                 .SeedPatch("files/changedFile", changedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -136,12 +124,6 @@ public class RenamingHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -158,7 +140,7 @@ public class RenamingHeuristicTests
                 .SeedPatch("files/updatedFile", updatedFile.Object)
                 .SeedPatch(fileName, singleRenamedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -192,12 +174,6 @@ public class RenamingHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -224,7 +200,7 @@ public class RenamingHeuristicTests
                 .SeedPatch("files/largeRenamedFile", largeRenamedFile.Object)
                 .SeedPatch("files/modifiedAndRenamedFile", modifiedAndRenamedFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -263,12 +239,6 @@ public class RenamingHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -289,7 +259,7 @@ public class RenamingHeuristicTests
                 .SeedPatch("files/movedFile", movedFile.Object)
                 .SeedPatch("files/renamedFile", renamedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -329,12 +299,6 @@ public class RenamingHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -355,7 +319,7 @@ public class RenamingHeuristicTests
                 .SeedPatch("files/renamedFile", renamedFile.Object)
                 .SeedPatch(toFileName, singleMovedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -389,12 +353,6 @@ public class RenamingHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -433,7 +391,7 @@ public class RenamingHeuristicTests
                 .SeedPatch("files/largeMovedFile", largeMovedFile.Object)
                 .SeedPatch("files/modifiedAndMovedFile", modifiedAndMovedFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
