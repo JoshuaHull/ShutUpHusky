@@ -22,12 +22,7 @@ public class TypeAndScopeHeuristicTests {
             Head = new MockBranch {
                 FriendlyName = branchName,
             }
-            .WithSensibleDefaults()
-            .Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new StatusEntry[] {},
-            }.Object,
-            Diff = new MockDiff().Object
+            .WithSensibleDefaults(),
         }.WithSensibleDefaults();
 
         // Act & Assert
@@ -54,12 +49,7 @@ public class TypeAndScopeHeuristicTests {
             Head = new MockBranch {
                 FriendlyName = branchName,
             }
-            .WithSensibleDefaults()
-            .Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new StatusEntry[] {},
-            }.Object,
-            Diff = new MockDiff().Object
+            .WithSensibleDefaults(),
         }.WithSensibleDefaults();
 
         // Act & Assert
@@ -69,59 +59,53 @@ public class TypeAndScopeHeuristicTests {
     [Test]
     public void ShouldReturnPerfType_WhenEnoughFilesHaveBeenDeleted() {
         // Arrange
-        var createdFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var renamedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var firstDeletedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 100,
-        };
-
-        var secondDeletedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 100,
-        };
-
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
             }
-            .WithSensibleDefaults()
-            .Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/firstDeletedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/secondDeletedFile",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/firstDeletedFile", firstDeletedFile.Object)
-                .SeedPatch("files/secondDeletedFile", secondDeletedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+            .WithSensibleDefaults(),
+        }
+        .WithSensibleDefaults()
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.NewInIndex,
+                FilePath = "files/createdFile",
+            },
+            new MockPatch {
+                LinesAdded = 100,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.RenamedInIndex,
+                FilePath = "files/renamedFile",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.DeletedFromIndex,
+                FilePath = "files/firstDeletedFile",
+            },
+            new MockPatch {
+                LinesAdded = 0,
+                LinesDeleted = 100,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.DeletedFromIndex,
+                FilePath = "files/secondDeletedFile",
+            },
+            new MockPatch {
+                LinesAdded = 0,
+                LinesDeleted = 100,
+            }
+        );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -139,59 +123,53 @@ public class TypeAndScopeHeuristicTests {
     [Test]
     public void ShouldReturnCiType_WhenEnoughFilesAppearToAffectCi() {
         // Arrange
-        var createdFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var renamedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var firstCiFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var secondCiFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
             }
             .WithSensibleDefaults()
-            .Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/firstCiFile.yaml",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/secondCiFile.YAML",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/firstCiFile.yaml", firstCiFile.Object)
-                .SeedPatch("files/secondCiFile.YAML", secondCiFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+        }
+        .WithSensibleDefaults()
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.NewInIndex,
+                FilePath = "files/createdFile",
+            },
+            new MockPatch {
+                LinesAdded = 100,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.RenamedInIndex,
+                FilePath = "files/renamedFile",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/firstCiFile.yaml",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/secondCiFile.YAML",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -209,59 +187,53 @@ public class TypeAndScopeHeuristicTests {
     [Test]
     public void ShouldReturnDocsType_WhenEnoughFilesAppearToAffectDocs() {
         // Arrange
-        var createdFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var renamedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var firstDocsFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var secondDocsFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
             }
             .WithSensibleDefaults()
-            .Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/firstDocsFile.md",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/secondDocsFile.MD",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/firstDocsFile.md", firstDocsFile.Object)
-                .SeedPatch("files/secondDocsFile.MD", secondDocsFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+        }
+        .WithSensibleDefaults()
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.NewInIndex,
+                FilePath = "files/createdFile",
+            },
+            new MockPatch {
+                LinesAdded = 100,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.RenamedInIndex,
+                FilePath = "files/renamedFile",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/firstDocsFile.md",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/secondDocsFile.MD",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -279,59 +251,53 @@ public class TypeAndScopeHeuristicTests {
     [Test]
     public void ShouldReturnTestType_WhenEnoughTestHaveBeenAltered() {
         // Arrange
-        var createdFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var renamedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var firstTestFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var secondTestFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
             }
             .WithSensibleDefaults()
-            .Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/firstTestFile.cs",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/secondTestFile.CS",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/firstTestFile.cs", firstTestFile.Object)
-                .SeedPatch("files/secondTestFile.CS", secondTestFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+        }
+        .WithSensibleDefaults()
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.NewInIndex,
+                FilePath = "files/createdFile",
+            },
+            new MockPatch {
+                LinesAdded = 100,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.RenamedInIndex,
+                FilePath = "files/renamedFile",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/firstTestFile.cs",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/secondTestFile.CS",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -349,59 +315,53 @@ public class TypeAndScopeHeuristicTests {
     [Test]
     public void ShouldReturnChoreType_WhenBranchNameHasNoMatches_AndUnrelatedFilesHaveBeenStaged() {
         // Arrange
-        var docsFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var yamlFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var testFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var unrelatedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
         var repo = new MockRepository {
             Head = new MockBranch {
                 FriendlyName = "some-branch/has-no-scope-or-ticket",
             }
             .WithSensibleDefaults()
-            .Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/docsFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/yamlFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/testFile.cs",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/unrelatedFile.CS",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/docsFile", docsFile.Object)
-                .SeedPatch("files/yamlFile", yamlFile.Object)
-                .SeedPatch("files/testFile", testFile.Object)
-                .SeedPatch("files/unrelatedFile", unrelatedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+        }
+        .WithSensibleDefaults()
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.NewInIndex,
+                FilePath = "files/docsFile",
+            },
+            new MockPatch {
+                LinesAdded = 100,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.RenamedInIndex,
+                FilePath = "files/yamlFile",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/testFile.cs",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/unrelatedFile.CS",
+            },
+            new MockPatch {
+                LinesAdded = 50,
+                LinesDeleted = 50,
+            }
+        );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
