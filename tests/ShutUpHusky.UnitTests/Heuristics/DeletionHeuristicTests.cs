@@ -28,29 +28,11 @@ public class DeletionHeuristicTests
             LinesDeleted = 0,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/changedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/changedFile", changedFile.Object)
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("files/changedFile", changedFile, FileStatus.ModifiedInIndex)
+            .SeedPatch("files/renamedFile", renamedFile, FileStatus.RenamedInIndex)
+            .SeedPatch("files/createdFile", createdFile, FileStatus.NewInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -72,24 +54,10 @@ public class DeletionHeuristicTests
             LinesDeleted = 0,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/singleDeletedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/changedFile",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/singleDeletedFile", singleDeletedFile.Object)
-                .SeedPatch("files/changedFile", changedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("files/singleDeletedFile", singleDeletedFile, FileStatus.DeletedFromIndex)
+            .SeedPatch("files/changedFile", changedFile, FileStatus.ModifiedInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -123,24 +91,10 @@ public class DeletionHeuristicTests
             LinesDeleted = 50,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/updatedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = fileName,
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/updatedFile", updatedFile.Object)
-                .SeedPatch(fileName, singleDeletedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("files/updatedFile", updatedFile, FileStatus.ModifiedInIndex)
+            .SeedPatch(fileName, singleDeletedFile, FileStatus.DeletedFromIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -173,34 +127,12 @@ public class DeletionHeuristicTests
             LinesDeleted = 20,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/smallDeletedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/mediumDeletedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/largeDeletedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/modifiedFile",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/smallDeletedFile", smallDeletedFile.Object)
-                .SeedPatch("files/mediumDeletedFile", mediumDeletedFile.Object)
-                .SeedPatch("files/largeDeletedFile", largeDeletedFile.Object)
-                .SeedPatch("files/modifiedFile", modifiedFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("files/smallDeletedFile", smallDeletedFile, FileStatus.DeletedFromIndex)
+            .SeedPatch("files/mediumDeletedFile", mediumDeletedFile, FileStatus.DeletedFromIndex)
+            .SeedPatch("files/largeDeletedFile", largeDeletedFile, FileStatus.DeletedFromIndex)
+            .SeedPatch("files/modifiedFile", modifiedFile, FileStatus.ModifiedInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
