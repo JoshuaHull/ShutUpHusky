@@ -36,12 +36,6 @@ public class TypescriptHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -53,7 +47,7 @@ public class TypescriptHeuristicTests
             Diff = new MockDiff()
                 .SeedPatch("src/modifiedFile.ts", modifiedTypescriptFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -103,12 +97,6 @@ public class TypescriptHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -120,7 +108,7 @@ public class TypescriptHeuristicTests
             Diff = new MockDiff()
                 .SeedPatch("src/CommitMessage.ts", newTypescriptFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
