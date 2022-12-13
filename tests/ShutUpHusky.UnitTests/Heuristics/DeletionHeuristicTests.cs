@@ -29,12 +29,6 @@ public class DeletionHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -56,7 +50,7 @@ public class DeletionHeuristicTests
                 .SeedPatch("files/renamedFile", renamedFile.Object)
                 .SeedPatch("files/createdFile", createdFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -79,12 +73,6 @@ public class DeletionHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -101,7 +89,7 @@ public class DeletionHeuristicTests
                 .SeedPatch("files/singleDeletedFile", singleDeletedFile.Object)
                 .SeedPatch("files/changedFile", changedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -136,12 +124,6 @@ public class DeletionHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -158,7 +140,7 @@ public class DeletionHeuristicTests
                 .SeedPatch("files/updatedFile", updatedFile.Object)
                 .SeedPatch(fileName, singleDeletedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -192,12 +174,6 @@ public class DeletionHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -224,7 +200,7 @@ public class DeletionHeuristicTests
                 .SeedPatch("files/largeDeletedFile", largeDeletedFile.Object)
                 .SeedPatch("files/modifiedFile", modifiedFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
