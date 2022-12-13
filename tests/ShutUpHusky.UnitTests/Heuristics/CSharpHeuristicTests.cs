@@ -35,19 +35,9 @@ public class CSharpHeuristicTests
                 """,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "src/modifiedFile.cs",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("src/modifiedFile.cs", modifiedCsharpFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("src/modifiedFile.cs", modifiedCsharpFile, FileStatus.ModifiedInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -96,19 +86,9 @@ public class CSharpHeuristicTests
                 """,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "src/CommitMessage.cs",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("src/CommitMessage.cs", newCSharpFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("src/CommitMessage.cs", newCSharpFile, FileStatus.NewInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -273,19 +253,9 @@ public class CSharpHeuristicTests
             Content = patchContent,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "src/CommitMessage.cs",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("src/CommitMessage.cs", newCSharpFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("src/CommitMessage.cs", newCSharpFile, FileStatus.NewInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
