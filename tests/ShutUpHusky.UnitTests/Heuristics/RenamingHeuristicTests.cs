@@ -13,44 +13,38 @@ public class RenamingHeuristicTests
     [Test]
     public void ShouldNotReturnALabel_WhenThereAreNoRenamedFiles() {
         // Arrange
-        var changedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var deletedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 100,
-        };
-
-        var createdFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/changedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/deletedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.ModifiedInIndex,
+                    FilePath = "files/changedFile",
                 },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/changedFile", changedFile.Object)
-                .SeedPatch("files/deletedFile", deletedFile.Object)
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+                new MockPatch {
+                    LinesAdded = 50,
+                    LinesDeleted = 50,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.DeletedFromIndex,
+                    FilePath = "files/deletedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 0,
+                    LinesDeleted = 100,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.NewInIndex,
+                    FilePath = "files/createdFile",
+                },
+                new MockPatch {
+                    LinesAdded = 100,
+                    LinesDeleted = 0,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -62,34 +56,28 @@ public class RenamingHeuristicTests
     [Test]
     public void ShouldReturnRenamedLabel_ForRenamedFile_WithNoLinesChanged() {
         // Arrange
-        var singleRenamedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 0,
-        };
-
-        var changedFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/singleRenamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/changedFile",
-                    }.Object,
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/singleRenamedFile",
                 },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/singleRenamedFile", singleRenamedFile.Object)
-                .SeedPatch("files/changedFile", changedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+                new MockPatch {
+                    LinesAdded = 0,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.ModifiedInIndex,
+                    FilePath = "files/changedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 100,
+                    LinesDeleted = 0,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -113,34 +101,28 @@ public class RenamingHeuristicTests
     [TestCase("singleRenamedFile.tests.ts", ExpectedResult = "renamed single-renamed-file tests")]
     public string ShouldReturnRenamedLabel_ForSingleRenamedFile(string fileName) {
         // Arrange
-        var singleRenamedFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var updatedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/updatedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = fileName,
-                    }.Object,
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.ModifiedInIndex,
+                    FilePath = "files/updatedFile",
                 },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/updatedFile", updatedFile.Object)
-                .SeedPatch(fileName, singleRenamedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+                new MockPatch {
+                    LinesAdded = 50,
+                    LinesDeleted = 50,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = fileName,
+                },
+                new MockPatch {
+                    LinesAdded = 100,
+                    LinesDeleted = 0,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -153,54 +135,48 @@ public class RenamingHeuristicTests
     public void ShouldReturnRenamedLabel_ForEachRenamedFile_WithDescendingPriority()
     {
         // Arrange
-        var smallRenamedFile = new MockPatch {
-            LinesAdded = 10,
-            LinesDeleted = 0,
-        };
-
-        var mediumRenamedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 0,
-        };
-
-        var largeRenamedFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var modifiedAndRenamedFile = new MockPatch {
-            LinesAdded = 10,
-            LinesDeleted = 20,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/smallRenamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/mediumRenamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/largeRenamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/modifiedAndRenamedFile",
-                    }.Object,
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/smallRenamedFile",
                 },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/smallRenamedFile", smallRenamedFile.Object)
-                .SeedPatch("files/mediumRenamedFile", mediumRenamedFile.Object)
-                .SeedPatch("files/largeRenamedFile", largeRenamedFile.Object)
-                .SeedPatch("files/modifiedAndRenamedFile", modifiedAndRenamedFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+                new MockPatch {
+                    LinesAdded = 10,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/mediumRenamedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 50,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/largeRenamedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 100,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/modifiedAndRenamedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 10,
+                    LinesDeleted = 20,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -228,38 +204,32 @@ public class RenamingHeuristicTests
     [Test]
     public void ShouldReturnMovedLabel_ForMovedFile_WithNoLinesChanged() {
         // Arrange
-        var movedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 0,
-        };
-
-        var renamedFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/movedFile",
-                        HeadToIndexRenameDetails = new MockRenameDetails {
-                            OldFilePath = "oldFiles/movedFile",
-                            NewFilePath = "files/movedFile",
-                        }.Object,
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/movedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "oldFiles/movedFile",
+                        NewFilePath = "files/movedFile",
                     }.Object,
                 },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/movedFile", movedFile.Object)
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+                new MockPatch {
+                    LinesAdded = 0,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/renamedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 100,
+                    LinesDeleted = 0,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -288,38 +258,32 @@ public class RenamingHeuristicTests
     [TestCase("oldFiles/singleMovedFile.tests.ts", "newFiles/singleMovedFile.tests.ts", ExpectedResult = "moved single-moved-file tests")]
     public string ShouldReturnMovedLabel_ForSingleMovedFile(string fromFileName, string toFileName) {
         // Arrange
-        var singleMovedFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var renamedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 50,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = toFileName,
-                        HeadToIndexRenameDetails = new MockRenameDetails {
-                            OldFilePath = fromFileName,
-                            NewFilePath = toFileName,
-                        }.Object,
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/renamedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 50,
+                    LinesDeleted = 50,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = toFileName,
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = fromFileName,
+                        NewFilePath = toFileName,
                     }.Object,
                 },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch(toFileName, singleMovedFile.Object)
-                .Object
-        }.WithSensibleDefaults();
+                new MockPatch {
+                    LinesAdded = 100,
+                    LinesDeleted = 0,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -332,66 +296,60 @@ public class RenamingHeuristicTests
     public void ShouldReturnMovedLabel_ForEachMovedFile_WithDescendingPriority()
     {
         // Arrange
-        var simplyRenamedFile = new MockPatch {
-            LinesAdded = 10,
-            LinesDeleted = 0,
-        };
-
-        var mediumMovedFile = new MockPatch {
-            LinesAdded = 50,
-            LinesDeleted = 0,
-        };
-
-        var largeMovedFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var modifiedAndMovedFile = new MockPatch {
-            LinesAdded = 10,
-            LinesDeleted = 20,
-        };
-
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/simplyRenamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/mediumMovedFile",
-                        HeadToIndexRenameDetails = new MockRenameDetails {
-                            OldFilePath = "oldFiles/mediumMovedFile",
-                            NewFilePath = "files/mediumMovedFile",
-                        }.Object,
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/largeMovedFile",
-                        HeadToIndexRenameDetails = new MockRenameDetails {
-                            OldFilePath = "oldFiles/largeMovedFile",
-                            NewFilePath = "files/largeMovedFile",
-                        }.Object,
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/modifiedAndMovedFile",
-                        HeadToIndexRenameDetails = new MockRenameDetails {
-                            OldFilePath = "oldFiles/modifiedAndMovedFile",
-                            NewFilePath = "files/modifiedAndMovedFile",
-                        }.Object,
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/simplyRenamedFile",
+                },
+                new MockPatch {
+                    LinesAdded = 10,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/mediumMovedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "oldFiles/mediumMovedFile",
+                        NewFilePath = "files/mediumMovedFile",
                     }.Object,
                 },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/simplyRenamedFile", simplyRenamedFile.Object)
-                .SeedPatch("files/mediumMovedFile", mediumMovedFile.Object)
-                .SeedPatch("files/largeMovedFile", largeMovedFile.Object)
-                .SeedPatch("files/modifiedAndMovedFile", modifiedAndMovedFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+                new MockPatch {
+                    LinesAdded = 50,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/largeMovedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "oldFiles/largeMovedFile",
+                        NewFilePath = "files/largeMovedFile",
+                    }.Object,
+                },
+                new MockPatch {
+                    LinesAdded = 100,
+                    LinesDeleted = 0,
+                }
+            )
+            .SeedPatch(
+                new MockStatusEntry {
+                    State = FileStatus.RenamedInIndex,
+                    FilePath = "files/modifiedAndMovedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "oldFiles/modifiedAndMovedFile",
+                        NewFilePath = "files/modifiedAndMovedFile",
+                    }.Object,
+                },
+                new MockPatch {
+                    LinesAdded = 10,
+                    LinesDeleted = 20,
+                }
+            );
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
