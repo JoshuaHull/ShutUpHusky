@@ -29,12 +29,6 @@ public class CreationHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -56,7 +50,7 @@ public class CreationHeuristicTests
                 .SeedPatch("files/renamedFile", renamedFile.Object)
                 .SeedPatch("files/deletedFile", deletedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -79,12 +73,6 @@ public class CreationHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -101,7 +89,7 @@ public class CreationHeuristicTests
                 .SeedPatch("files/singleCreatedFile", singleCreatedFile.Object)
                 .SeedPatch("files/changedFile", changedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -136,12 +124,6 @@ public class CreationHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -158,7 +140,7 @@ public class CreationHeuristicTests
                 .SeedPatch("files/updatedFile", updatedFile.Object)
                 .SeedPatch(fileName, singleCreatedFile.Object)
                 .Object
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -192,12 +174,6 @@ public class CreationHeuristicTests
         };
 
         var repo = new MockRepository {
-            Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
-            }.Object,
             Status = new MockRepositoryStatus {
                 StatusEntries = new[] {
                     new MockStatusEntry {
@@ -224,7 +200,7 @@ public class CreationHeuristicTests
                 .SeedPatch("files/largeCreatedFile", largeCreatedFile.Object)
                 .SeedPatch("files/modifiedFile", modifiedFile.Object)
                 .Object,
-        };
+        }.WithSensibleDefaults();
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
