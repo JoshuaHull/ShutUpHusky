@@ -21,7 +21,7 @@ internal class CSharpHeuristic : IHeuristic {
     };
 
     private readonly string[] TokenScoreboardIgnoreLinesStartingWith = new[] {
-        "namespace", "/**", "**/", "* ", "//"
+        "namespace", "/**", "**/", "* ", "//", "using"
     };
 
     private readonly string TokenizerSplitRegex =
