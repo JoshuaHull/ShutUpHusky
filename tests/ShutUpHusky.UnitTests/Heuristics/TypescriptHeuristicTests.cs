@@ -35,19 +35,9 @@ public class TypescriptHeuristicTests
                 """,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "src/modifiedFile.ts",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("src/modifiedFile.ts", modifiedTypescriptFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("src/modifiedFile.ts", modifiedTypescriptFile, FileStatus.ModifiedInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
@@ -96,19 +86,9 @@ public class TypescriptHeuristicTests
                 """,
         };
 
-        var repo = new MockRepository {
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "src/CommitMessage.ts",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("src/CommitMessage.ts", newTypescriptFile.Object)
-                .Object,
-        }.WithSensibleDefaults();
+        var repo = new MockRepository()
+            .WithSensibleDefaults()
+            .SeedPatch("src/CommitMessage.ts", newTypescriptFile, FileStatus.NewInIndex);
 
         // Act
         var result = Heuristic.Analyse(repo.Object);
