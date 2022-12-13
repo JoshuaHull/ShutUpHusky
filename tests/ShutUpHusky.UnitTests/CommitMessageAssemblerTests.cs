@@ -9,61 +9,53 @@ public class CommitMessageAssemblerTests {
     [Test]
     public void ShouldCreateCommitMessage_FromManyHeuristics_WithoutExceeding72Characters() {
         // Arrange
-        var renamedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 0,
-        };
-
-        var createdFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var modifiedFile = new MockPatch {
-            LinesAdded = 10,
-            LinesDeleted = 20,
-        };
-
-        var deletedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 20,
-        };
-
         var repo = new MockRepository {
             Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
                 FriendlyName = "main",
-            }.Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/modifiedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/deletedFile",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .SeedPatch("files/modifiedFile", modifiedFile.Object)
-                .SeedPatch("files/deletedFile", deletedFile.Object)
-                .Object,
-        };
+            }
+            .WithSensibleDefaults(),
+        }
+        .WithSensibleDefaults()
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.RenamedInIndex,
+                FilePath = "files/renamedFile",
+            },
+            new MockPatch {
+                LinesAdded = 0,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.NewInIndex,
+                FilePath = "files/createdFile",
+            },
+            new MockPatch {
+                LinesAdded = 100,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/modifiedFile",
+            },
+            new MockPatch {
+                LinesAdded = 10,
+                LinesDeleted = 20,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.DeletedFromIndex,
+                FilePath = "files/deletedFile",
+            },
+            new MockPatch {
+                LinesAdded = 0,
+                LinesDeleted = 20,
+            }
+        );
 
         var assembler = new CommitMessageAssembler();
 
@@ -81,17 +73,11 @@ public class CommitMessageAssemblerTests {
         // Arrange
         var repo = new MockRepository {
             Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
                 FriendlyName = "main",
-            }.Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = Array.Empty<StatusEntry>(),
-            }.Object,
-            Diff = new MockDiff().Object,
-        };
+            }
+            .WithSensibleDefaults(),
+        }
+        .WithSensibleDefaults();
 
         var assembler = new CommitMessageAssembler();
 
@@ -107,61 +93,53 @@ public class CommitMessageAssemblerTests {
     [Test]
     public void ShouldCreateCommitMessage_FromManyHeuristics_WithMessageBody_WhenMessageBodiesAreEnabled() {
         // Arrange
-        var renamedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 0,
-        };
-
-        var createdFile = new MockPatch {
-            LinesAdded = 100,
-            LinesDeleted = 0,
-        };
-
-        var modifiedFile = new MockPatch {
-            LinesAdded = 10,
-            LinesDeleted = 20,
-        };
-
-        var deletedFile = new MockPatch {
-            LinesAdded = 0,
-            LinesDeleted = 20,
-        };
-
         var repo = new MockRepository {
             Head = new MockBranch {
-                Tip = new MockCommit {
-                    Tree = new MockTree {
-                    }.Object,
-                }.Object,
                 FriendlyName = "main",
-            }.Object,
-            Status = new MockRepositoryStatus {
-                StatusEntries = new[] {
-                    new MockStatusEntry {
-                        State = FileStatus.RenamedInIndex,
-                        FilePath = "files/renamedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.NewInIndex,
-                        FilePath = "files/createdFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.ModifiedInIndex,
-                        FilePath = "files/modifiedFile",
-                    }.Object,
-                    new MockStatusEntry {
-                        State = FileStatus.DeletedFromIndex,
-                        FilePath = "files/deletedFile",
-                    }.Object,
-                },
-            }.Object,
-            Diff = new MockDiff()
-                .SeedPatch("files/renamedFile", renamedFile.Object)
-                .SeedPatch("files/createdFile", createdFile.Object)
-                .SeedPatch("files/modifiedFile", modifiedFile.Object)
-                .SeedPatch("files/deletedFile", deletedFile.Object)
-                .Object,
-        };
+            }
+            .WithSensibleDefaults(),
+        }
+        .WithSensibleDefaults()
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.RenamedInIndex,
+                FilePath = "files/renamedFile",
+            },
+            new MockPatch {
+                LinesAdded = 0,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.NewInIndex,
+                FilePath = "files/createdFile",
+            },
+            new MockPatch {
+                LinesAdded = 100,
+                LinesDeleted = 0,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.ModifiedInIndex,
+                FilePath = "files/modifiedFile",
+            },
+            new MockPatch {
+                LinesAdded = 10,
+                LinesDeleted = 20,
+            }
+        )
+        .SeedPatch(
+            new MockStatusEntry {
+                State = FileStatus.DeletedFromIndex,
+                FilePath = "files/deletedFile",
+            },
+            new MockPatch {
+                LinesAdded = 0,
+                LinesDeleted = 20,
+            }
+        );
 
         var assembler = new CommitMessageAssembler(new() {
             EnableBody = true,
