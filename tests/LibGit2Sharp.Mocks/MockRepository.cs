@@ -15,12 +15,9 @@ public class MockRepository: Mock<IRepository>, IHaveSensibleDefaults<MockReposi
     }
 
     public MockRepository WithSensibleDefaults() {
-        Head ??= new MockBranch {
-            Tip = new MockCommit {
-                Tree = new MockTree {
-                }.Object,
-            }.Object,
-        }.Object;
+        Head ??= new MockBranch()
+            .WithSensibleDefaults()
+            .Object;
 
         return this;
     }
