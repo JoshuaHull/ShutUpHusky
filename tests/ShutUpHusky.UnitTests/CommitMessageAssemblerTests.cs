@@ -20,6 +20,10 @@ public class CommitMessageAssemblerTests {
             new MockStatusEntry {
                 State = FileStatus.RenamedInIndex,
                 FilePath = "files/renamedFile",
+                HeadToIndexRenameDetails = new MockRenameDetails {
+                    OldFilePath = "files/file",
+                    NewFilePath = "files/renamedFile",
+                },
             },
             new MockPatch {
                 LinesAdded = 0,
@@ -104,6 +108,10 @@ public class CommitMessageAssemblerTests {
             new MockStatusEntry {
                 State = FileStatus.RenamedInIndex,
                 FilePath = "files/renamedFile",
+                HeadToIndexRenameDetails = new MockRenameDetails {
+                    OldFilePath = "files/file",
+                    NewFilePath = "files/renamedFile",
+                },
             },
             new MockPatch {
                 LinesAdded = 0,

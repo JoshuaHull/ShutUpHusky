@@ -62,6 +62,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/singleRenamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/singleFile",
+                        NewFilePath = "files/singleRenamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 0,
@@ -117,6 +121,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = fileName,
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "oldFileName",
+                        NewFilePath = fileName,
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 100,
@@ -141,6 +149,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/smallRenamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/smallFile",
+                        NewFilePath = "files/smallRenamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 10,
@@ -151,6 +163,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/mediumRenamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/mediumFile",
+                        NewFilePath = "files/mediumRenamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 50,
@@ -161,6 +177,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/largeRenamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/largeFile",
+                        NewFilePath = "files/largeRenamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 100,
@@ -171,6 +191,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/modifiedAndRenamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/modifiedFile",
+                        NewFilePath = "files/modifiedAndRenamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 10,
@@ -224,6 +248,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/renamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/file",
+                        NewFilePath = "files/renamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 100,
@@ -264,6 +292,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/renamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/file",
+                        NewFilePath = "files/renamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 50,
@@ -302,6 +334,10 @@ public class RenamingHeuristicTests
                 new MockStatusEntry {
                     State = FileStatus.RenamedInIndex,
                     FilePath = "files/simplyRenamedFile",
+                    HeadToIndexRenameDetails = new MockRenameDetails {
+                        OldFilePath = "files/simpleFile",
+                        NewFilePath = "files/simplyRenamedFile",
+                    },
                 },
                 new MockPatch {
                     LinesAdded = 10,
