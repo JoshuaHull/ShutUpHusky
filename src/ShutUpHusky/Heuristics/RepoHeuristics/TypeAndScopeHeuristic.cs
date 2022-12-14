@@ -2,10 +2,10 @@ using LibGit2Sharp;
 using ShutUpHusky.Utils;
 using System.Text.RegularExpressions;
 
-namespace ShutUpHusky.Heuristics;
+namespace ShutUpHusky.Heuristics.RepoHeuristics;
 
-internal class TypeAndScopeHeuristic : IHeuristic {
-    public ICollection<HeuristicResult> Analyse(IRepository repo) {
+internal class TypeAndScopeHeuristic : IRepoHeuristic {
+    public HeuristicResult Analyse(IRepository repo) {
         var scope = GetScope(repo);
         var type = GetType(repo) ?? (scope is null ? Constants.Types.Chore : Constants.Types.Feat);
 
@@ -13,12 +13,10 @@ internal class TypeAndScopeHeuristic : IHeuristic {
             ? type
             : $"{type}({scope})";
 
-        return new HeuristicResult[] {
-            new() {
-                Priority = Constants.TypeAndScopePriority,
-                Value = typeAndScope,
-                After = ": ",
-            },
+        return new() {
+            Priority = Constants.TypeAndScopePriority,
+            Value = typeAndScope,
+            After = ": ",
         };
     }
 

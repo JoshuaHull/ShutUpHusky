@@ -3,8 +3,9 @@ using LibGit2Sharp;
 using LibGit2Sharp.Mocks;
 using NUnit.Framework;
 using ShutUpHusky.Heuristics;
+using ShutUpHusky.Heuristics.RepoHeuristics;
 
-namespace ShutUpHusky.UnitTests.Heuristics;
+namespace ShutUpHusky.UnitTests.Heuristics.RepoHeuristics;
 
 public class TypeAndScopeHeuristicTests {
     private static TypeAndScopeHeuristic Heuristic => new();
@@ -26,7 +27,7 @@ public class TypeAndScopeHeuristicTests {
         }.WithSensibleDefaults();
 
         // Act & Assert
-        return Heuristic.Analyse(repo.Object).Single().Value;
+        return Heuristic.Analyse(repo.Object).Value;
     }
 
     [TestCase("feat/add-feature", ExpectedResult = "feat")]
@@ -53,7 +54,7 @@ public class TypeAndScopeHeuristicTests {
         }.WithSensibleDefaults();
 
         // Act & Assert
-        return Heuristic.Analyse(repo.Object).Single().Value;
+        return Heuristic.Analyse(repo.Object).Value;
     }
 
     [Test]
@@ -111,13 +112,13 @@ public class TypeAndScopeHeuristicTests {
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
+        result.Should().BeEquivalentTo(
+            new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "perf",
                 After = ": ",
-            },
-        });
+            }
+        );
     }
 
     [Test]
@@ -175,13 +176,13 @@ public class TypeAndScopeHeuristicTests {
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
+        result.Should().BeEquivalentTo(
+            new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "ci",
                 After = ": ",
-            },
-        });
+            }
+        );
     }
 
     [Test]
@@ -239,17 +240,17 @@ public class TypeAndScopeHeuristicTests {
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
+        result.Should().BeEquivalentTo(
+            new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "docs",
                 After = ": ",
-            },
-        });
+            }
+        );
     }
 
     [Test]
-    public void ShouldReturnTestType_WhenEnoughTestHaveBeenAltered() {
+    public void ShouldReturnTestType_WhenEnoughTestsHaveBeenAltered() {
         // Arrange
         var repo = new MockRepository {
             Head = new MockBranch {
@@ -303,13 +304,13 @@ public class TypeAndScopeHeuristicTests {
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
+        result.Should().BeEquivalentTo(
+            new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "test",
                 After = ": ",
-            },
-        });
+            }
+        );
     }
 
     [Test]
@@ -367,12 +368,12 @@ public class TypeAndScopeHeuristicTests {
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new List<HeuristicResult> {
-            new() {
+        result.Should().BeEquivalentTo(
+            new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "chore",
                 After = ": ",
-            },
-        });
+            }
+        );
     }
 }

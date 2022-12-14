@@ -1,9 +1,9 @@
 using LibGit2Sharp;
 using ShutUpHusky.Utils;
 
-namespace ShutUpHusky.Heuristics;
+namespace ShutUpHusky.Heuristics.RepoHeuristics;
 
-internal class SubjectHeuristic : IHeuristic {
+internal class SubjectHeuristic : IRepoHeuristic {
     private static readonly string[] ExcludedTerms = new[] {
         "test",
         "tests",
@@ -11,11 +11,11 @@ internal class SubjectHeuristic : IHeuristic {
         "specs",
     };
 
-    public ICollection<HeuristicResult> Analyse(IRepository repo) {
+    public HeuristicResult Analyse(IRepository repo) {
         var stagedFiles = repo.GetAllAlteredFiles().ToList();
 
         if (stagedFiles.Count == 0)
-            return Array.Empty<HeuristicResult>();
+            return HeuristicResult.Default;
 
         var fileTerms = stagedFiles
             .ToFileTerms()
@@ -30,14 +30,12 @@ internal class SubjectHeuristic : IHeuristic {
             .First();
 
         if (mostCommonTerm.Value == 1)
-            return Array.Empty<HeuristicResult>();
+            return HeuristicResult.Default;
 
-        return new HeuristicResult[] {
-            new() {
-                Priority = Constants.SubjectPriority,
-                Value = mostCommonTerm.Key,
-                After = " > ",
-            },
+        return new() {
+            Priority = Constants.SubjectPriority,
+            Value = mostCommonTerm.Key,
+            After = " > ",
         };
     }
 }

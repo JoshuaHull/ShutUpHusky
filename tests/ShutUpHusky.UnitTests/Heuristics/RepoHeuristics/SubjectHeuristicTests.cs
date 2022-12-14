@@ -1,9 +1,9 @@
 using LibGit2Sharp;
 using LibGit2Sharp.Mocks;
 using NUnit.Framework;
-using ShutUpHusky.Heuristics;
+using ShutUpHusky.Heuristics.RepoHeuristics;
 
-namespace ShutUpHusky.UnitTests.Heuristics;
+namespace ShutUpHusky.UnitTests.Heuristics.RepoHeuristics;
 
 public class SubjectHeuristicTests
 {
@@ -43,6 +43,6 @@ public class SubjectHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        return result.SingleOrDefault()?.Value ?? string.Empty;
+        return result.Value;
     }
 }

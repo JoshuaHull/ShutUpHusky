@@ -1,13 +1,12 @@
 using System.Text;
 using LibGit2Sharp;
 using ShutUpHusky.Heuristics;
+using ShutUpHusky.Heuristics.RepoHeuristics;
 
 namespace ShutUpHusky;
 
 public class CommitMessageAssembler {
     private IHeuristic[] Heuristics => new IHeuristic[] {
-        new TypeAndScopeHeuristic(),
-        new SubjectHeuristic(),
         new CreationHeuristic(),
         new DeletionHeuristic(),
         new ModificationHeuristic(),
@@ -21,6 +20,11 @@ public class CommitMessageAssembler {
     }
 
     public string Assemble(IRepository repo) {
+        var repoHeuristics = new[] {
+            new TypeAndScopeHeuristic().Analyse(repo),
+            new SubjectHeuristic().Analyse(repo),
+        };
+
         var heuristicResults = Heuristics
             .Union(_options.EnableExperimentalHeuristics ?
                 new IHeuristic[] {
@@ -30,6 +34,7 @@ public class CommitMessageAssembler {
                 : Array.Empty<IHeuristic>()
             )
             .SelectMany(h => h.Analyse(repo))
+            .Union(repoHeuristics)
             .Where(h => h.Priority > Constants.NotAPriority)
             .OrderByDescending(h => h.Priority)
             .ToArray();
