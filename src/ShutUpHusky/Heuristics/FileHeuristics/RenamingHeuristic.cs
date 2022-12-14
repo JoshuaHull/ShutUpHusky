@@ -2,7 +2,7 @@ using LibGit2Sharp;
 using ShutUpHusky.Files;
 using ShutUpHusky.Utils;
 
-namespace ShutUpHusky.Heuristics;
+namespace ShutUpHusky.Heuristics.FileHeuristics;
 
 internal class RenamingHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {

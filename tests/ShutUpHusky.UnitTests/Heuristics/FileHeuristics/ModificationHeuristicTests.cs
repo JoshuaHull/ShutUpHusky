@@ -3,8 +3,9 @@ using LibGit2Sharp;
 using LibGit2Sharp.Mocks;
 using NUnit.Framework;
 using ShutUpHusky.Heuristics;
+using ShutUpHusky.Heuristics.FileHeuristics;
 
-namespace ShutUpHusky.UnitTests.Heuristics;
+namespace ShutUpHusky.UnitTests.Heuristics.FileHeuristics;
 
 public class ModificationHeuristicTests
 {

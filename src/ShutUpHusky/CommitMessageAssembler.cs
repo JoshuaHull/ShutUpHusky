@@ -1,6 +1,7 @@
 using System.Text;
 using LibGit2Sharp;
 using ShutUpHusky.Heuristics;
+using ShutUpHusky.Heuristics.FileHeuristics;
 using ShutUpHusky.Heuristics.RepoHeuristics;
 
 namespace ShutUpHusky;

@@ -5,41 +5,44 @@ using ShutUpHusky.Analysis.Tokenizing;
 using ShutUpHusky.Files;
 using ShutUpHusky.Utils;
 
-namespace ShutUpHusky.Heuristics;
+namespace ShutUpHusky.Heuristics.FileHeuristics;
 // https://blog.floydhub.com/gentle-introduction-to-text-summarization-in-machine-learning/
 // https://arxiv.org/pdf/1805.03989.pdf
 // https://github.com/lancopku/Global-Encoding
-internal class TypescriptHeuristic : IHeuristic {
+internal class CSharpHeuristic : IHeuristic {
     private readonly string[] TokenScoreboardIgnoredTokens = new[] {
-        "const", "import", "export", "interface", "class", "type", "var", "function", "let", "break", "continue", "debugger",
-        "do", "try", "finally", "catch", "instanceof", "return", "void", "case", "default", "if", "for", "else", "while",
-        "typeof", "delete", "enum", "true", "false", "in", "null", "undefined", "with", "satisfies", "as", "public", "private",
-        "implements", "extends", "package", "static", "protected", "yield", "=", "==", "===", "[", "]", "|", ",", "+", "-",
+        "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char", "checked", "class", "const", "continue",
+        "decimal", "default", "delegate", "do", "double", "else", "enum", "event", "explicit", "extern", "false", "finally",
+        "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int", "interface", "internal", "is", "lock", "long",
+        "namespace", "new", "null", "object", "operator", "out", "override", "params", "private", "protected", "public",
+        "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof", "stackalloc", "static", "string", "struct",
+        "switch", "this", "throw", "true", "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using", "virtual",
+        "void", "volatile", "while", "=", "==", "[", "]", "|", ",", "+", "-",
     };
 
     private readonly string[] TokenScoreboardIgnoreLinesStartingWith = new[] {
-        "export", "import", "/**", "**/", "* ", "//"
+        "namespace", "/**", "**/", "* ", "//", "using"
     };
 
     private readonly string TokenizerSplitRegex =
         """
-        [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bget\b|\bset\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
+        [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bprotected\b|\binternal\b|\bget\b|\bset\b|\binit\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
         """;
 
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var files = repo.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex);
-        var typescriptExtensions = new[] { "ts", "tsx" };
-        var typescriptFiles = files.Where(file => typescriptExtensions.Contains(file.GetFileExtension()));
+        var cSharpExtensions = new[] { "cs" };
+        var cSharpFiles = files.Where(file => cSharpExtensions.Contains(file.GetFileExtension()));
 
-        return typescriptFiles
+        return cSharpFiles
             .Select(file => file.ToPatch(repo))
-            .SelectMany(AnalyseTypescriptFile)
+            .SelectMany(AnalyseCSharpFile)
             .ToArray();
     }
 
-    private IEnumerable<HeuristicResult> AnalyseTypescriptFile(Patch typescriptFile) {
+    private IEnumerable<HeuristicResult> AnalyseCSharpFile(Patch cSharpFile) {
         var patchParser = new PatchParser();
-        var changedLines = patchParser.Parse(typescriptFile);
+        var changedLines = patchParser.Parse(cSharpFile);
 
         var tokenizer = new Tokenizer(new() {
             SplitRegex = TokenizerSplitRegex,

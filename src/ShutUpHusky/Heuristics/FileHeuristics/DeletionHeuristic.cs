@@ -2,15 +2,15 @@ using LibGit2Sharp;
 using ShutUpHusky.Files;
 using ShutUpHusky.Utils;
 
-namespace ShutUpHusky.Heuristics;
+namespace ShutUpHusky.Heuristics.FileHeuristics;
 
-internal class CreationHeuristic : IHeuristic {
+internal class DeletionHeuristic : IHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
-        var createdFiles = repo.GetCreatedFiles();
-        var statusEntriesByPatch = createdFiles.MapPatchToStatusEntry(repo);
+        var deletedFiles = repo.GetDeletedFiles();
+        var statusEntriesByPatch = deletedFiles.MapPatchToStatusEntry(repo);
         var patchesOrderedByDiff = statusEntriesByPatch
             .Keys
-            .OrderByDescending(patch => patch.LinesAdded)
+            .OrderByDescending(patch => patch.LinesDeleted)
             .ToList();
         var patchCount = patchesOrderedByDiff.Count;
 
@@ -21,8 +21,8 @@ internal class CreationHeuristic : IHeuristic {
 
         for (var i = 0; i < patchCount; i += 1) {
             var currentFile = patchesOrderedByDiff[i];
-            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Created);
-            var priority = i.ToPriority(Constants.LowPriority, Constants.HigherPriorty, patchCount);
+            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Deleted);
+            var priority = i.ToPriority(Constants.LowPriority, Constants.HighPriorty, patchCount);
 
             rtn[i] = new() {
                 Priority = priority,
