@@ -4,33 +4,20 @@ using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics.FileHeuristics;
 
-internal class ModificationHeuristic : IHeuristic {
+internal class ModificationHeuristic : IFileHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var modifiedFiles = repo.GetModifiedFiles();
-        var statusEntriesByPatch = modifiedFiles.MapPatchToStatusEntry(repo);
-        var patchesOrderedByDiff = statusEntriesByPatch
-            .Keys
-            .OrderByDescending(patch => patch.LinesAdded + patch.LinesDeleted)
-            .ToList();
-        var patchCount = patchesOrderedByDiff.Count;
 
-        if (patchCount == 0)
-            return Array.Empty<HeuristicResult>();
+        return modifiedFiles
+            .Select(file => {
+                var patch = file.ToPatch(repo);
 
-        var rtn = new HeuristicResult[patchCount];
-
-        for (var i = 0; i < patchCount; i += 1) {
-            var currentFile = patchesOrderedByDiff[i];
-            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Modified);
-            var priority = i.ToPriority(Constants.LowPriority, Constants.MediumPriorty, patchCount);
-
-            rtn[i] = new() {
-                Priority = priority,
-                Value = commitMessageSnippet,
-                After = ", ",
-            };
-        }
-
-        return rtn;
+                return new HeuristicResult {
+                    Priority = Constants.LowPriority + patch.LinesAdded + patch.LinesDeleted,
+                    Value = file.ToCommitMessageSnippet(FileChangeType.Modified),
+                };
+            })
+            .OrderByDescending(_ => _.Priority)
+            .ToArray();
     }
 }
