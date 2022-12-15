@@ -9,7 +9,7 @@ namespace ShutUpHusky.Heuristics.FileHeuristics;
 // https://blog.floydhub.com/gentle-introduction-to-text-summarization-in-machine-learning/
 // https://arxiv.org/pdf/1805.03989.pdf
 // https://github.com/lancopku/Global-Encoding
-internal class TypescriptHeuristic : IHeuristic {
+internal class TypescriptHeuristic : IFileHeuristic {
     private readonly string[] TokenScoreboardIgnoredTokens = new[] {
         "const", "import", "export", "interface", "class", "type", "var", "function", "let", "break", "continue", "debugger",
         "do", "try", "finally", "catch", "instanceof", "return", "void", "case", "default", "if", "for", "else", "while",
