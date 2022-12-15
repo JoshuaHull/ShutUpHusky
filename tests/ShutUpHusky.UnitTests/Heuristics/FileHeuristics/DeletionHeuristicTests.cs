@@ -66,7 +66,7 @@ public class DeletionHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.HighPriorty,
+                Priority = 1,
                 Value = "deleted single-deleted-file",
                 After = ", ",
             },
@@ -141,17 +141,17 @@ public class DeletionHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.HighPriorty,
+                Priority = 101,
                 Value = "deleted large-deleted-file",
                 After = ", ",
             },
             new() {
-                Priority = 5.5,
+                Priority = 76,
                 Value = "deleted medium-deleted-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriority,
+                Priority = 51,
                 Value = "deleted small-deleted-file",
                 After = ", ",
             },
