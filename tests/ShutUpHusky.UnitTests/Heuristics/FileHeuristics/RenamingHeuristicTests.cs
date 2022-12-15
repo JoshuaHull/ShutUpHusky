@@ -90,7 +90,7 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.MediumPriorty,
+                Priority = 1,
                 Value = "renamed single-renamed-file",
                 After = ", ",
             },
@@ -209,17 +209,17 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.MediumPriorty,
+                Priority = 101,
                 Value = "renamed large-renamed-file",
                 After = ", ",
             },
             new() {
-                Priority = 3,
+                Priority = 51,
                 Value = "renamed medium-renamed-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriority,
+                Priority = 11,
                 Value = "renamed small-renamed-file",
                 After = ", ",
             },
@@ -266,16 +266,16 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.HighPriorty,
+                Priority = 1,
                 Value = "moved moved-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.MediumPriorty,
+                Priority = 101,
                 Value = "renamed renamed-file",
                 After = ", ",
             },
-        });
+        }).And.BeInDescendingOrder(h => h.Priority);
     }
 
     [TestCase("oldFiles/singleMovedFile", "newFiles/singleMovedFile", ExpectedResult = "moved single-moved-file")]
@@ -394,22 +394,22 @@ public class RenamingHeuristicTests
         // Assert
         result.Should().BeEquivalentTo(new List<HeuristicResult> {
             new() {
-                Priority = Constants.HighPriorty,
+                Priority = 101,
                 Value = "moved large-moved-file",
                 After = ", ",
             },
             new() {
-                Priority = 5.5,
+                Priority = 51,
                 Value = "moved medium-moved-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.LowPriority,
+                Priority = 11,
                 Value = "moved modified-and-moved-file",
                 After = ", ",
             },
             new() {
-                Priority = Constants.MediumPriorty,
+                Priority = 11,
                 Value = "renamed simply-renamed-file",
                 After = ", ",
             },

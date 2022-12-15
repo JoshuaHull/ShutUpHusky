@@ -4,67 +4,27 @@ using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics.FileHeuristics;
 
-internal class RenamingHeuristic : IHeuristic {
+internal class RenamingHeuristic : IFileHeuristic {
     public ICollection<HeuristicResult> Analyse(IRepository repo) {
         var renamedFiles = repo.GetRenamedFiles();
-        var movedFiles = renamedFiles
-            .Where(file => file.HeadToIndexRenameDetails is not null)
-            .Where(file => file.HeadToIndexRenameDetails.NewFilePath.GetFileName() == file.HeadToIndexRenameDetails.OldFilePath.GetFileName())
-            .ToList();
-        var actuallyRenamedFiles = renamedFiles.Except(movedFiles);
 
-        return GetRenamedFilesResults(repo, actuallyRenamedFiles)
-            .Union(GetMovedFilesResults(repo, movedFiles))
-            .OrderByDescending(r => r.Priority)
+        return renamedFiles
+            .Select(file => {
+                var patch = file.ToPatch(repo);
+                var renameDetails = file.HeadToIndexRenameDetails;
+                var isMovedFile = renameDetails is not null &&
+                    renameDetails.OldFilePath.GetFileName() == renameDetails.NewFilePath.GetFileName();
+
+                if (patch.LinesDeleted != 0 && !isMovedFile)
+                    return HeuristicResult.Default;
+
+                return new HeuristicResult {
+                    Priority = Constants.LowPriority + patch.LinesAdded,
+                    Value = file.ToCommitMessageSnippet(isMovedFile ? FileChangeType.Moved : FileChangeType.Renamed),
+                };
+            })
+            .Where(_ => _.Priority > Constants.NotAPriority)
+            .OrderByDescending(_ => _.Priority)
             .ToArray();
-    }
-
-    private IEnumerable<HeuristicResult> GetMovedFilesResults(IRepository repo, List<StatusEntry> movedFiles) {
-        var statusEntriesByPatch = movedFiles.MapPatchToStatusEntry(repo);
-        var patchesOrderedByDiff = statusEntriesByPatch
-            .Keys
-            .OrderByDescending(patch => patch.LinesAdded)
-            .ToList();
-        var patchCount = patchesOrderedByDiff.Count;
-
-        if (patchCount == 0)
-            yield break;
-
-        for (var i = 0; i < patchCount; i += 1) {
-            var currentFile = patchesOrderedByDiff[i];
-            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Moved);
-            var priority = i.ToPriority(Constants.LowPriority, Constants.HighPriorty, patchCount);
-
-            yield return new() {
-                Priority = priority,
-                Value = commitMessageSnippet,
-                After = ", ",
-            };
-        }
-    }
-
-    private IEnumerable<HeuristicResult> GetRenamedFilesResults(IRepository repo, IEnumerable<StatusEntry> renamedFiles) {
-        var statusEntriesByPatch = renamedFiles.MapPatchToStatusEntry(repo);
-        var patchesOrderedByDiff = statusEntriesByPatch
-            .Keys
-            .Where(patch => patch.LinesDeleted == 0)
-            .OrderByDescending(patch => patch.LinesAdded)
-            .ToList();
-        var patchCount = patchesOrderedByDiff.Count;
-
-        if (patchCount == 0)
-            yield break;
-
-        for (var i = 0; i < patchCount; i += 1) {
-            var currentFile = patchesOrderedByDiff[i];
-            var commitMessageSnippet = statusEntriesByPatch[currentFile].ToCommitMessageSnippet(FileChangeType.Renamed);
-            var priority = i.ToPriority(Constants.LowPriority, Constants.MediumPriorty, patchCount);
-
-            yield return new() {
-                Priority = priority,
-                Value = commitMessageSnippet,
-                After = ", ",
-            };
-        }
     }
 }
