@@ -7,13 +7,6 @@ using ShutUpHusky.Heuristics.RepoHeuristics;
 namespace ShutUpHusky;
 
 public class CommitMessageAssembler {
-    private IHeuristic[] Heuristics => new IHeuristic[] {
-        new CreationHeuristic(),
-        new DeletionHeuristic(),
-        new ModificationHeuristic(),
-        new RenamingHeuristic(),
-    };
-
     private readonly CommitMessageAssemblerOptions _options;
 
     public CommitMessageAssembler(CommitMessageAssemblerOptions? options = null) {
@@ -21,45 +14,45 @@ public class CommitMessageAssembler {
     }
 
     public string Assemble(IRepository repo) {
-        var repoHeuristics = new[] {
-            new TypeAndScopeHeuristic().Analyse(repo),
-            new SubjectHeuristic().Analyse(repo),
+        var heuristicResults = new HeuristicResult[][] {
+            new HeuristicResult[] { new TypeAndScopeHeuristic().Analyse(repo) },
+            new HeuristicResult[] { new SubjectHeuristic().Analyse(repo) },
+            new CreationHeuristic().Analyse(repo),
+            new DeletionHeuristic().Analyse(repo),
+            new ModificationHeuristic().Analyse(repo),
+            new RenamingHeuristic().Analyse(repo),
         };
 
-        var heuristicResults = Heuristics
-            .Union(_options.EnableExperimentalHeuristics ?
-                new IHeuristic[] {
-                    new TypescriptHeuristic(),
-                    new CSharpHeuristic(),
-                }
-                : Array.Empty<IHeuristic>()
-            )
-            .SelectMany(h => h.Analyse(repo))
-            .Union(repoHeuristics)
-            .Where(h => h.Priority > Constants.NotAPriority)
-            .OrderByDescending(h => h.Priority)
-            .ToArray();
-
-        return ApplyHeuristics(repo, heuristicResults, new PendingCommitMessage())
+        return ApplyHeuristics(new PendingCommitMessage(), repo, heuristicResults)
             .ToString();
     }
 
-    private PendingCommitMessage ApplyHeuristics(IRepository repo, HeuristicResult[] heuristicResults, PendingCommitMessage commitMessage) {
-        if (heuristicResults.Length == 0)
+    private PendingCommitMessage ApplyHeuristics(PendingCommitMessage commitMessage, IRepository repo, HeuristicResult[][] heuristics) {
+        if (heuristics.Length == 0)
             return commitMessage;
 
-        var (h, hs) = (heuristicResults[0], heuristicResults[1..]);
+        var (r, rs) = (heuristics[0], heuristics[1..]);
+
+        if (r.Length == 0)
+            return ApplyHeuristics(commitMessage, repo, rs);
+
+        var (h, hs) = (r[0], r[1..]);
 
         var canAddSnippetToTitle = commitMessage.CanAddSnippetToTitle(h.Value);
         var canAddSnippetToBody = !canAddSnippetToTitle && _options.EnableBody;
 
+        var nextHeuristics = rs.Append(hs).ToArray();
+
+        if (h.Priority == Constants.NotAPriority)
+            return ApplyHeuristics(commitMessage, repo, nextHeuristics);
+
         if (canAddSnippetToTitle)
-            return ApplyHeuristics(repo, hs, commitMessage.AddMessageSnippetToTitle(h.Value).WithNextSeparator(h.After ?? string.Empty));
+            return ApplyHeuristics(commitMessage.AddMessageSnippetToTitle(h.Value).WithNextSeparator(h.After ?? string.Empty), repo, nextHeuristics);
 
         if (canAddSnippetToBody)
-            return ApplyHeuristics(repo, hs, commitMessage.AddMessageSnippetToBody(h.Value));
+            return ApplyHeuristics(commitMessage.AddMessageSnippetToBody(h.Value), repo, nextHeuristics);
 
-        return ApplyHeuristics(repo, hs, commitMessage);
+        return ApplyHeuristics(commitMessage, repo, nextHeuristics);
     }
 
     private class PendingCommitMessage {
