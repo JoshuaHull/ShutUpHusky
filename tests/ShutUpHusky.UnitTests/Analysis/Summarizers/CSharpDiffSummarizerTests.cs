@@ -2,20 +2,17 @@ using FluentAssertions;
 using LibGit2Sharp;
 using LibGit2Sharp.Mocks;
 using NUnit.Framework;
+using ShutUpHusky.Analysis.Summarizers;
 using ShutUpHusky.Heuristics;
-using ShutUpHusky.Heuristics.FileHeuristics;
-using ShutUpHusky.Utils;
 
-namespace ShutUpHusky.UnitTests.Heuristics.FileHeuristics;
+namespace ShutUpHusky.UnitTests.Analysis.Summarizers;
 
-public class CSharpHeuristicTests
+public class CSharpDiffSummarizerTests
 {
-    private CSharpHeuristic Heuristic => new();
-
     [Test]
     public void ShouldWriteAReasonableCommitMessage_FromReplacedLines() {
         // Arrange
-        var modifiedCsharpFile = new MockPatch {
+        var modifiedCSharpFile = new MockPatch {
             Content =
                 """
                 diff --git a/src/modified.cs b/src/modified.cs
@@ -36,27 +33,30 @@ public class CSharpHeuristicTests
                 """,
         };
 
-        var repo = new MockRepository()
-            .WithSensibleDefaults()
-            .SeedPatch("src/modifiedFile.cs", modifiedCsharpFile, FileStatus.ModifiedInIndex);
+        var modifiedCSharpFileStatusEntry = new MockStatusEntry {
+            FilePath = "src/modifiedFile.cs",
+            State = FileStatus.ModifiedInIndex,
+        };
 
         // Act
-        var result = Heuristic.Analyse(repo.Object);
+        var result = SummarizerFactory
+            .Create(modifiedCSharpFileStatusEntry.Object)
+            .Summarize(modifiedCSharpFile.Object);
 
         // Assert
         result.Should().BeEquivalentTo(new HeuristicResult[] {
             new() {
-                Priority = 0.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 3),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "replaced secondReplacedLine new SomeObject 11 with unrelatedArray new[] 1, 2, 3",
                 After = ", ",
             },
             new() {
-                Priority = 1.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 3),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "replaced wow with wew",
                 After = ", ",
             },
             new() {
-                Priority = 2.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 3),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "added string wowStatement = wowow",
                 After = ", ",
             },
@@ -87,37 +87,40 @@ public class CSharpHeuristicTests
                 """,
         };
 
-        var repo = new MockRepository()
-            .WithSensibleDefaults()
-            .SeedPatch("src/CommitMessage.cs", newCSharpFile, FileStatus.NewInIndex);
+        var newCSharpFileStatusEntry = new MockStatusEntry {
+            FilePath = "src/CommitMessage.cs",
+            State = FileStatus.NewInIndex,
+        };
 
         // Act
-        var result = Heuristic.Analyse(repo.Object);
+        var result = SummarizerFactory
+            .Create(newCSharpFileStatusEntry.Object)
+            .Summarize(newCSharpFile.Object);
 
         // Assert
         result.Should().BeEquivalentTo(new HeuristicResult[] {
             new() {
-                Priority = 0.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "added var trimmed = snippet Trim",
                 After = ", ",
             },
             new() {
-                Priority = 1.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "added AddSnippet string snippet",
                 After = ", ",
             },
             new() {
-                Priority = 2.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "added class CommitMessage",
                 After = ", ",
             },
             new() {
-                Priority = 3.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "added string Value",
                 After = ", ",
             },
             new() {
-                Priority = 4.ToPriority(Constants.LowPriority, Constants.LanguageSpecificPriority, 5),
+                Priority = Constants.LanguageSpecificPriority,
                 Value = "added double Evaluate",
                 After = ", ",
             },
@@ -254,12 +257,15 @@ public class CSharpHeuristicTests
             Content = patchContent,
         };
 
-        var repo = new MockRepository()
-            .WithSensibleDefaults()
-            .SeedPatch("src/CommitMessage.cs", newCSharpFile, FileStatus.NewInIndex);
+        var newCSharpFileStatusEntry = new MockStatusEntry {
+            FilePath = "src/CommitMessage.cs",
+            State = FileStatus.NewInIndex,
+        };
 
         // Act
-        var result = Heuristic.Analyse(repo.Object);
+        var result = SummarizerFactory
+            .Create(newCSharpFileStatusEntry.Object)
+            .Summarize(newCSharpFile.Object);
 
         // Assert
         return result.First().Value;
