@@ -21,6 +21,7 @@ internal class RenamingHeuristic : IFileHeuristic {
                 return new HeuristicResult {
                     Priority = Constants.LowPriority + patch.LinesAdded,
                     Value = file.ToCommitMessageSnippet(isMovedFile ? FileChangeType.Moved : FileChangeType.Renamed),
+                    After = ", ",
                 };
             })
             .Where(_ => _.Priority > Constants.NotAPriority)

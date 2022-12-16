@@ -12,6 +12,7 @@ internal class CreationHeuristic : IFileHeuristic {
             .Select(file => new HeuristicResult {
                 Priority = Constants.LowPriority + file.ToPatch(repo).LinesAdded,
                 Value = file.ToCommitMessageSnippet(FileChangeType.Created),
+                After = ", ",
             })
             .OrderByDescending(_ => _.Priority)
             .ToArray();

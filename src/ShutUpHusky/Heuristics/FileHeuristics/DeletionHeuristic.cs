@@ -12,6 +12,7 @@ internal class DeletionHeuristic : IFileHeuristic {
             .Select(file => new HeuristicResult {
                 Priority = Constants.LowPriority + file.ToPatch(repo).LinesDeleted,
                 Value = file.ToCommitMessageSnippet(FileChangeType.Deleted),
+                After = ", ",
             })
             .OrderByDescending(_ => _.Priority)
             .ToArray();

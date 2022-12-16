@@ -15,6 +15,7 @@ internal class ModificationHeuristic : IFileHeuristic {
                 return new HeuristicResult {
                     Priority = Constants.LowPriority + patch.LinesAdded + patch.LinesDeleted,
                     Value = file.ToCommitMessageSnippet(FileChangeType.Modified),
+                    After = ", ",
                 };
             })
             .OrderByDescending(_ => _.Priority)
