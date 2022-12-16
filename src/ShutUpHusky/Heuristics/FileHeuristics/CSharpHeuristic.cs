@@ -29,7 +29,7 @@ internal class CSharpHeuristic : IFileHeuristic {
         [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bprotected\b|\binternal\b|\bget\b|\bset\b|\binit\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
         """;
 
-    public ICollection<HeuristicResult> Analyse(IRepository repo) {
+    public HeuristicResult[] Analyse(IRepository repo) {
         var files = repo.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex);
         var cSharpExtensions = new[] { "cs" };
         var cSharpFiles = files.Where(file => cSharpExtensions.Contains(file.GetFileExtension()));

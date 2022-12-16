@@ -5,7 +5,7 @@ using ShutUpHusky.Utils;
 namespace ShutUpHusky.Heuristics.FileHeuristics;
 
 internal class ModificationHeuristic : IFileHeuristic {
-    public ICollection<HeuristicResult> Analyse(IRepository repo) {
+    public HeuristicResult[] Analyse(IRepository repo) {
         var modifiedFiles = repo.GetModifiedFiles();
 
         return modifiedFiles

@@ -26,7 +26,7 @@ internal class TypescriptHeuristic : IFileHeuristic {
         [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bget\b|\bset\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
         """;
 
-    public ICollection<HeuristicResult> Analyse(IRepository repo) {
+    public HeuristicResult[] Analyse(IRepository repo) {
         var files = repo.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex);
         var typescriptExtensions = new[] { "ts", "tsx" };
         var typescriptFiles = files.Where(file => typescriptExtensions.Contains(file.GetFileExtension()));
