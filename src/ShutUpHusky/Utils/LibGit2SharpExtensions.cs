@@ -50,7 +50,7 @@ internal static class LibGit2SharpExtensions {
 
     public static IEnumerable<StatusEntry> GetFiles(this RepositoryStatus status, params FileStatus[] statuses) =>
         status
-            .Where(file => statuses.Contains(file.State));
+            .Where(file => statuses.Any(status => (file.State & status) == status));
 
     public static IEnumerable<StatusEntry> GetAllAlteredFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
