@@ -18,15 +18,11 @@ public class CommitMessageAssembler {
             IncludeDiffSummary = _options.EnableSummaries,
         };
 
-        var heuristicResults = new HeuristicResult[][] {
-            new HeuristicResult[] {
-                new TypeAndScopeHeuristic().Analyse(repo),
-            },
+        var typeAndScope = new TypeAndScopeHeuristic().Analyse(repo).Value;
+        var subject = new SubjectHeuristic().Analyse(repo).Value;
+        var commitMessagePrefix = $"{typeAndScope}: {(subject == string.Empty ? string.Empty : $"{subject} > ")}";
 
-            new HeuristicResult[] {
-                new SubjectHeuristic().Analyse(repo),
-            },
-
+        var heuristicResults = Zip(
             new CreationHeuristic {
                 Options = options,
             }
@@ -45,52 +41,70 @@ public class CommitMessageAssembler {
             new RenamingHeuristic {
                 Options = options,
             }
-            .Analyse(repo),
-        };
+            .Analyse(repo)
+        )
+        .ToArray();
 
-        return ApplyHeuristics(new PendingCommitMessage(), repo, heuristicResults)
-            .ToString();
+        return ApplyHeuristics(
+            new PendingCommitMessage(commitMessagePrefix),
+            repo,
+            heuristicResults
+        )
+        .ToString();
     }
 
-    private PendingCommitMessage ApplyHeuristics(PendingCommitMessage commitMessage, IRepository repo, HeuristicResult[][] heuristics) {
-        if (heuristics.Length == 0)
+    private IEnumerable<HeuristicResult> Zip(params HeuristicResult[][] heuristicResults) {
+        var indices = new int[heuristicResults.Length];
+
+        for (int i = 0; i < heuristicResults.Length; i += 1) {
+            var results = heuristicResults[i];
+            var idx = indices[i];
+
+            if (idx >= results.Length)
+                continue;
+
+            indices[i] += 1;
+
+            yield return results[idx];
+        }
+    }
+
+    private PendingCommitMessage ApplyHeuristics(PendingCommitMessage commitMessage, IRepository repo, HeuristicResult[] heuristicResults) {
+        if (heuristicResults.Length == 0)
             return commitMessage;
 
-        var (r, rs) = (heuristics[0], heuristics[1..]);
-
-        if (r.Length == 0)
-            return ApplyHeuristics(commitMessage, repo, rs);
-
-        var (h, hs) = (r[0], r[1..]);
-
-        var nextHeuristics = rs.Append(hs).ToArray();
+        var (h, hs) = (heuristicResults[0], heuristicResults[1..]);
 
         if (h.Priority == Constants.NotAPriority)
-            return ApplyHeuristics(commitMessage, repo, nextHeuristics);
+            return ApplyHeuristics(commitMessage, repo, hs);
 
         var canAddSnippetToTitle = commitMessage.CanAddSnippetToTitle(h.Value);
         var canAddSnippetToBody = !canAddSnippetToTitle && _options.EnableBody;
 
         if (!canAddSnippetToTitle && h.Shortened is not null) {
             var hsWithShortened = hs.Append(h.Shortened).OrderByDescending(r => r.Priority).ToArray();
-            var nextHeuristicsWithShortened = rs.Append(hsWithShortened).ToArray();
-            return ApplyHeuristics(commitMessage, repo, nextHeuristicsWithShortened);
+            return ApplyHeuristics(commitMessage, repo, hsWithShortened);
         }
 
         if (canAddSnippetToTitle)
-            return ApplyHeuristics(commitMessage.AddMessageSnippetToTitle(h.Value).WithNextSeparator(h.After ?? string.Empty), repo, nextHeuristics);
+            return ApplyHeuristics(commitMessage.AddMessageSnippetToTitle(h.Value), repo, hs);
 
         if (canAddSnippetToBody)
-            return ApplyHeuristics(commitMessage.AddMessageSnippetToBody(h.Value), repo, nextHeuristics);
+            return ApplyHeuristics(commitMessage.AddMessageSnippetToBody(h.Value), repo, hs);
 
-        return ApplyHeuristics(commitMessage, repo, nextHeuristics);
+        return ApplyHeuristics(commitMessage, repo, hs);
     }
 
     private class PendingCommitMessage {
-        private readonly StringBuilder _titleBuilder = new();
-        private readonly StringBuilder _bodyBuilder = new();
-        private bool HasAppliedSeparator = false;
+        private readonly StringBuilder _titleBuilder;
+        private readonly StringBuilder _bodyBuilder;
+        private bool HasAddedToTitle = false;
         private string NextSeparator = string.Empty;
+
+        public PendingCommitMessage(string initialTitle) {
+            _titleBuilder = new(initialTitle);
+            _bodyBuilder = new();
+        }
 
         public bool CanAddSnippetToTitle(string snippet) =>
             _titleBuilder.Length + NextSeparator.Length + snippet.Length <= Constants.MaxCommitTitleLength;
@@ -100,12 +114,13 @@ public class CommitMessageAssembler {
                 return this;
 
             _titleBuilder.Append(NextSeparator);
-            HasAppliedSeparator = true;
             return this;
         }
 
         public PendingCommitMessage AddMessageSnippetToTitle(string snippet) {
             ApplySeparator();
+            HasAddedToTitle = true;
+            NextSeparator = ", ";
             _titleBuilder.Append(snippet);
             return this;
         }
@@ -116,16 +131,11 @@ public class CommitMessageAssembler {
             return this;
         }
 
-        public PendingCommitMessage WithNextSeparator(string separator) {
-            NextSeparator = separator;
-            return this;
-        }
-
         public override string ToString() {
             var rtn = new StringBuilder()
                 .Append(_titleBuilder);
 
-            if (!HasAppliedSeparator)
+            if (!HasAddedToTitle)
                 rtn
                     .Append(NextSeparator)
                     .Append(Constants.DefaultCommitMessageSnippet);
