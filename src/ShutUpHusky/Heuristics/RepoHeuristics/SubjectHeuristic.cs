@@ -11,11 +11,11 @@ internal class SubjectHeuristic : IRepoHeuristic {
         "specs",
     };
 
-    public HeuristicResult Analyse(IRepository repo) {
+    public HeuristicResult? Analyse(IRepository repo) {
         var stagedFiles = repo.GetAllAlteredFiles().ToList();
 
         if (stagedFiles.Count == 0)
-            return HeuristicResult.Default;
+            return null;
 
         var fileTerms = stagedFiles
             .ToFileTerms()
@@ -30,7 +30,7 @@ internal class SubjectHeuristic : IRepoHeuristic {
             .First();
 
         if (mostCommonTerm.Value == 1)
-            return HeuristicResult.Default;
+            return null;
 
         return new() {
             Priority = Constants.SubjectPriority,

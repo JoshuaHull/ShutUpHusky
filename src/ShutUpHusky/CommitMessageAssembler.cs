@@ -19,8 +19,8 @@ public class CommitMessageAssembler {
         };
 
         var typeAndScope = new TypeAndScopeHeuristic().Analyse(repo).Value;
-        var subject = new SubjectHeuristic().Analyse(repo).Value;
-        var commitMessagePrefix = $"{typeAndScope}: {(subject == string.Empty ? string.Empty : $"{subject} > ")}";
+        var subject = new SubjectHeuristic().Analyse(repo)?.Value;
+        var commitMessagePrefix = $"{typeAndScope}: {(subject == null ? string.Empty : $"{subject} > ")}";
 
         var heuristicResults = Zip(
             new CreationHeuristic {

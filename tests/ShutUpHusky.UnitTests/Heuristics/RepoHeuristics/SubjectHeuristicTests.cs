@@ -10,11 +10,11 @@ public class SubjectHeuristicTests
     private SubjectHeuristic Heuristic => new();
 
     [TestCase("programs", "entries", "programs-directory", ExpectedResult = "programs")]
-    [TestCase("cats", "dogs", "fish", ExpectedResult = "")]
+    [TestCase("cats", "dogs", "fish", ExpectedResult = null)]
     [TestCase("really-cool-file.ts", "less-cool-file.ts", "cool.test.ts", ExpectedResult = "cool")]
     [TestCase("ReallyCoolFile.ts", "less-cool-file.ts", "ThisFile-IsCool.test.ts", ExpectedResult = "cool")]
     [TestCase("SubjectHeuristicTests.cs", "TypeAndScopeHeuristicTests.cs", "CommitMessageAssemblerTests.ts", ExpectedResult = "heuristic")]
-    public string ShouldChooseSubjectFromFileNames_WhenThereIsACommonTerm(
+    public string? ShouldChooseSubjectFromFileNames_WhenThereIsACommonTerm(
         string firstFileName, string secondFileName, string thirdFileName
     ) {
         // Arrange
@@ -43,6 +43,6 @@ public class SubjectHeuristicTests
         var result = Heuristic.Analyse(repo.Object);
 
         // Assert
-        return result.Value;
+        return result?.Value;
     }
 }
