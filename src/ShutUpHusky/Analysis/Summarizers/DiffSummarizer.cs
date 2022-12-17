@@ -28,10 +28,10 @@ internal class DiffSummarizer {
         });
         scorboard.AddAll(tokenized);
 
-        var lowestScoringLinesFirst = scorboard.HighestScoringLines().Reverse();
+        var lines = scorboard.HighestScoringLines();
         HeuristicResult? rtn = null;
 
-        foreach (var line in lowestScoringLinesFirst) {
+        foreach (var line in lines) {
             if (rtn is null) {
                 rtn = new() {
                     Value = line.ToString(),
@@ -39,10 +39,12 @@ internal class DiffSummarizer {
                 continue;
             }
 
-            rtn = new() {
-                Value = line.ToString(),
-                LowerPriorityResult = rtn,
-            };
+            rtn = HeuristicResult.AddLowerPriorityResult(
+                rtn,
+                new HeuristicResult {
+                    Value = line.ToString(),
+                }
+            );
         }
 
         return rtn;
