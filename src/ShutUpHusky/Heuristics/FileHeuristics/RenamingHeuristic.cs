@@ -5,6 +5,8 @@ using ShutUpHusky.Utils;
 namespace ShutUpHusky.Heuristics.FileHeuristics;
 
 internal class RenamingHeuristic : IFileHeuristic {
+    public FileHeuristicOptions? Options { private get; init; }
+
     public HeuristicResult[] Analyse(IRepository repo) {
         var renamedFiles = repo.GetRenamedFiles();
 
