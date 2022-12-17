@@ -21,7 +21,7 @@ internal class RenamingHeuristic : IFileHeuristic {
                     return null;
 
                 return new HeuristicResult {
-                    Priority = Constants.LowPriority + patch.LinesAdded,
+                    Priority = 1 + patch.LinesAdded,
                     Value = file.ToCommitMessageSnippet(isMovedFile ? FileChangeType.Moved : FileChangeType.Renamed),
                 };
             })
