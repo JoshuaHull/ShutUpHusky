@@ -18,14 +18,15 @@ internal class RenamingHeuristic : IFileHeuristic {
                     renameDetails.OldFilePath.GetFileName() == renameDetails.NewFilePath.GetFileName();
 
                 if (patch.LinesDeleted != 0 && !isMovedFile)
-                    return HeuristicResult.Default;
+                    return null;
 
                 return new HeuristicResult {
                     Priority = Constants.LowPriority + patch.LinesAdded,
                     Value = file.ToCommitMessageSnippet(isMovedFile ? FileChangeType.Moved : FileChangeType.Renamed),
                 };
             })
-            .Where(_ => _.Priority > Constants.NotAPriority)
+            .Where(_ => _ is not null)
+            .Cast<HeuristicResult>()
             .OrderByDescending(_ => _.Priority)
             .ToArray();
     }
