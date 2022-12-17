@@ -21,7 +21,7 @@ internal class DeletionHeuristic : IFileHeuristic {
 
                 if (summary is null)
                     return new HeuristicResult {
-                        Priority = Constants.LowPriority + patch.LinesDeleted,
+                        Priority = 1 + patch.LinesDeleted,
                         Value = fileChangeSnippet,
                     };
 
@@ -30,7 +30,7 @@ internal class DeletionHeuristic : IFileHeuristic {
                 return HeuristicResult.AddShortened(
                     prefixedSummary,
                     new() {
-                        Priority = Constants.LowPriority + patch.LinesDeleted,
+                        Priority = 1 + patch.LinesDeleted,
                         Value = fileChangeSnippet,
                     }
                 );
