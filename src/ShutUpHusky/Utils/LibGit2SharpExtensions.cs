@@ -29,7 +29,7 @@ internal static class LibGit2SharpExtensions {
     public static IEnumerable<StatusEntry> GetDeletedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
-            .GetDeletedFiles();
+            .GetFiles(FileStatus.DeletedFromIndex);
 
     public static IEnumerable<StatusEntry> GetRenamedFiles(this IRepository repo) =>
         repo
@@ -44,9 +44,6 @@ internal static class LibGit2SharpExtensions {
 
     public static IEnumerable<StatusEntry> GetAllAlteredFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
-
-    public static IEnumerable<StatusEntry> GetDeletedFiles(this RepositoryStatus status) =>
-        status.GetFiles(FileStatus.DeletedFromIndex);
 
     public static IEnumerable<StatusEntry> GetRenamedFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.RenamedInIndex);
