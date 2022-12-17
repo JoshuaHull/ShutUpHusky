@@ -9,11 +9,11 @@ namespace ShutUpHusky.Analysis.Summarizers;
 // https://arxiv.org/pdf/1805.03989.pdf
 // https://github.com/lancopku/Global-Encoding
 internal class DiffSummarizer {
-    public required string[] TokenScoreboardIgnoredTokens;
-    public required string[] TokenScoreboardIgnoreLinesStartingWith;
-    public required string TokenizerSplitRegex;
+    public required string[] TokenScoreboardIgnoredTokens { private get; init; }
+    public required string[] TokenScoreboardIgnoreLinesStartingWith { private get; init; }
+    public required string TokenizerSplitRegex { private get; init; }
 
-    public IEnumerable<HeuristicResult> Summarize(Patch patch) {
+    public HeuristicResult? Summarize(Patch patch) {
         var patchParser = new PatchParser();
         var changedLines = patchParser.Parse(patch);
 
@@ -28,14 +28,27 @@ internal class DiffSummarizer {
         });
         scorboard.AddAll(tokenized);
 
-        var highestScoringLines = scorboard.HighestScoringLines().ToArray();
-        var lineCount = highestScoringLines.Length;
+        var lowestScoringLinesFirst = scorboard.HighestScoringLines().Reverse();
+        HeuristicResult? rtn = null;
 
-        for (var i = 0; i < lineCount; i += 1)
-            yield return new() {
+        foreach (var line in lowestScoringLinesFirst) {
+            if (rtn is null) {
+                rtn = new() {
+                    Priority = Constants.LanguageSpecificPriority,
+                    Value = line.ToString(),
+                    After = ", ",
+                };
+                continue;
+            }
+
+            rtn = new() {
                 Priority = Constants.LanguageSpecificPriority,
-                Value = highestScoringLines[i].ToString(),
+                Value = line.ToString(),
                 After = ", ",
+                Shortened = rtn,
             };
+        }
+
+        return rtn;
     }
 }
