@@ -1,6 +1,6 @@
 using LibGit2Sharp;
 
-namespace ShutUpHusky.Heuristics;
+namespace ShutUpHusky.Heuristics.RepoHeuristics;
 
 internal interface IRepoHeuristic {
     HeuristicResult Analyse(IRepository repo);
