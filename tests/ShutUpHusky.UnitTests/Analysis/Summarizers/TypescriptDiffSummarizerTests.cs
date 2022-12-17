@@ -49,9 +49,9 @@ public class TypescriptDiffSummarizerTests
         result.Should().BeEquivalentTo(
             new HeuristicResult {
                 Value = "replaced secondReplacedLine value 11 with unrelatedConstant [1, 2, 3]",
-                Shortened = new() {
+                LowerPriorityResult = new() {
                     Value = "replaced wow with wew",
-                    Shortened = new() {
+                    LowerPriorityResult = new() {
                         Value = "added const wowStatement = wowow",
                     },
                 },
@@ -99,13 +99,13 @@ public class TypescriptDiffSummarizerTests
         result.Should().BeEquivalentTo(
             new HeuristicResult {
                 Value = "added evaluate => double = => value length / 3 00",
-                Shortened = new() {
+                LowerPriorityResult = new() {
                     Value = "added addSnippet snippet string",
-                    Shortened = new() {
+                    LowerPriorityResult = new() {
                         Value = "added value string",
-                        Shortened = new() {
+                        LowerPriorityResult = new() {
                             Value = "added const trimmed = snippet trim",
-                            Shortened = new() {
+                            LowerPriorityResult = new() {
                                 Value = "added class CommitMessage implements ICommitMessage",
                             },
                         },

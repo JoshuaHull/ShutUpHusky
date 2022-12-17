@@ -49,9 +49,9 @@ public class CSharpDiffSummarizerTests
         result.Should().BeEquivalentTo(
             new HeuristicResult {
                 Value = "replaced secondReplacedLine new SomeObject 11 with unrelatedArray new[] 1, 2, 3",
-                Shortened = new() {
+                LowerPriorityResult = new() {
                     Value = "replaced wow with wew",
-                    Shortened = new() {
+                    LowerPriorityResult = new() {
                         Value = "added string wowStatement = wowow",
                     },
                 },
@@ -99,14 +99,14 @@ public class CSharpDiffSummarizerTests
         result.Should().BeEquivalentTo(
             new HeuristicResult {
                 Value = "added var trimmed = snippet Trim",
-                Shortened = new() {
+                LowerPriorityResult = new() {
                     Value = "added AddSnippet string snippet",
-                    Shortened = new() {
+                    LowerPriorityResult = new() {
                         Value = "added class CommitMessage",
-                        Shortened =
+                        LowerPriorityResult =
                         new() {
                             Value = "added string Value",
-                            Shortened = new() {
+                            LowerPriorityResult = new() {
                                 Value = "added double Evaluate",
                             },
                         },

@@ -27,7 +27,7 @@ internal class ModificationHeuristic : IFileHeuristic {
 
                 var prefixedSummary = HeuristicResult.PrefixAll(summary, $"{fileChangeSnippet} - ");
 
-                return HeuristicResult.AddShortened(
+                return HeuristicResult.AddLowerPriorityResult(
                     prefixedSummary,
                     new() {
                         Priority = 1 + patch.LinesAdded + patch.LinesDeleted,

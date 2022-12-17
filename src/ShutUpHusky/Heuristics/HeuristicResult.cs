@@ -3,16 +3,16 @@ namespace ShutUpHusky.Heuristics;
 internal record HeuristicResult {
     public double Priority { get; init; }
     public required string Value { get; init; } = string.Empty;
-    public HeuristicResult? Shortened { get; init; }
+    public HeuristicResult? LowerPriorityResult { get; init; }
 
-    public static HeuristicResult AddShortened(HeuristicResult parent, HeuristicResult shortened) =>
+    public static HeuristicResult AddLowerPriorityResult(HeuristicResult parent, HeuristicResult lowerPriorityResult) =>
         parent with {
-            Shortened = parent.Shortened is null ? shortened : AddShortened(parent.Shortened, shortened),
+            LowerPriorityResult = parent.LowerPriorityResult is null ? lowerPriorityResult : AddLowerPriorityResult(parent.LowerPriorityResult, lowerPriorityResult),
         };
 
     public static HeuristicResult PrefixAll(HeuristicResult parent, string prefix) =>
         parent with {
             Value = $"{prefix}{parent.Value}",
-            Shortened = parent.Shortened is null ? null : PrefixAll(parent.Shortened, prefix),
+            LowerPriorityResult = parent.LowerPriorityResult is null ? null : PrefixAll(parent.LowerPriorityResult, prefix),
         };
 }

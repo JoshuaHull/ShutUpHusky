@@ -41,7 +41,7 @@ internal class DiffSummarizer {
 
             rtn = new() {
                 Value = line.ToString(),
-                Shortened = rtn,
+                LowerPriorityResult = rtn,
             };
         }
 
