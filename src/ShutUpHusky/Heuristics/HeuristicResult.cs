@@ -1,7 +1,7 @@
 namespace ShutUpHusky.Heuristics;
 
 internal record HeuristicResult {
-    public required double Priority { get; init; }
+    public double Priority { get; init; }
     public required string Value { get; init; } = string.Empty;
     public HeuristicResult? Shortened { get; init; }
 
