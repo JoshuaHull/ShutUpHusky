@@ -41,7 +41,9 @@ public class TypescriptDiffSummarizerTests
         // Act
         var result = SummarizerFactory
             .Create(modifiedTypescriptFileStatusEntry.Object)
-            .Summarize(modifiedTypescriptFile.Object);
+            ?.Summarize(modifiedTypescriptFile.Object) ?? throw new Exception(
+                $"No summarizer found for test {nameof(ShouldWriteAReasonableCommitMessage_FromReplacedLines)}"
+            );
 
         // Assert
         result.Should().BeEquivalentTo(
@@ -92,7 +94,9 @@ public class TypescriptDiffSummarizerTests
         // Act
         var result = SummarizerFactory
             .Create(newTypescriptFileStatusEntry.Object)
-            .Summarize(newTypescriptFile.Object);
+            ?.Summarize(newTypescriptFile.Object) ?? throw new Exception(
+                $"No summarizer found for test {nameof(ShouldWriteMeaningfulCommitMessage_FromAddedProperties_AndFunctions_AndClasses_Etc)}"
+            );
 
         // Assert
         result.Should().BeEquivalentTo(

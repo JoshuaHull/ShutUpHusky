@@ -41,7 +41,9 @@ public class CSharpDiffSummarizerTests
         // Act
         var result = SummarizerFactory
             .Create(modifiedCSharpFileStatusEntry.Object)
-            .Summarize(modifiedCSharpFile.Object);
+            ?.Summarize(modifiedCSharpFile.Object) ?? throw new Exception(
+                $"No summarizer found for test {nameof(ShouldWriteAReasonableCommitMessage_FromReplacedLines)}"
+            );
 
         // Assert
         result.Should().BeEquivalentTo(
@@ -92,7 +94,9 @@ public class CSharpDiffSummarizerTests
         // Act
         var result = SummarizerFactory
             .Create(newCSharpFileStatusEntry.Object)
-            .Summarize(newCSharpFile.Object);
+            ?.Summarize(newCSharpFile.Object) ?? throw new Exception(
+                $"No summarizer found for test {nameof(ShouldWriteMeaningfulCommitMessage_FromAddedProperties_AndFunctions_AndClasses_Etc)}"
+            );
 
         // Assert
         result.Should().BeEquivalentTo(
@@ -258,7 +262,9 @@ public class CSharpDiffSummarizerTests
         // Act
         var result = SummarizerFactory
             .Create(newCSharpFileStatusEntry.Object)
-            .Summarize(newCSharpFile.Object);
+            ?.Summarize(newCSharpFile.Object) ?? throw new Exception(
+                $"No summarizer found for test {nameof(ShouldWriteMeaningfulCommitMessages_ForRealCommitDiffs)}"
+            );
 
         // Assert
         return result.Value;
