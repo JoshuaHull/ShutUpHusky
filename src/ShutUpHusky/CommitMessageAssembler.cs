@@ -55,14 +55,21 @@ public class CommitMessageAssembler {
 
     private IEnumerable<HeuristicResult> Zip(params HeuristicResult[][] heuristicResults) {
         var indices = new int[heuristicResults.Length];
+        int empties = 0;
 
-        for (int i = 0; i < heuristicResults.Length; i += 1) {
+        for (int i = 0; i < heuristicResults.Length; i = (i + 1) % heuristicResults.Length) {
+            if (empties >= heuristicResults.Length)
+                break;
+
             var results = heuristicResults[i];
             var idx = indices[i];
 
-            if (idx >= results.Length)
+            if (idx >= results.Length) {
+                empties += 1;
                 continue;
+            }
 
+            empties = 0;
             indices[i] += 1;
 
             yield return results[idx];
