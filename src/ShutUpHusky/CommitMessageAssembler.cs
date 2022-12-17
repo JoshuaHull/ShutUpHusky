@@ -144,9 +144,7 @@ public class CommitMessageAssembler {
                 .Append(_titleBuilder);
 
             if (!HasAddedToTitle)
-                rtn
-                    .Append(NextSeparator)
-                    .Append(Constants.DefaultCommitMessageSnippet);
+                rtn.Append(Constants.DefaultCommitMessageSnippet);
 
             return rtn
                 .Append(_bodyBuilder)
