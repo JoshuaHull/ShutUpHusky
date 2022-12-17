@@ -14,7 +14,6 @@ internal class TypeAndScopeHeuristic : IRepoHeuristic {
             : $"{type}({scope})";
 
         return new() {
-            Priority = Constants.TypeAndScopePriority,
             Value = typeAndScope,
         };
     }

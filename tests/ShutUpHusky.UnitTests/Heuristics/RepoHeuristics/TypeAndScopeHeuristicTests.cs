@@ -114,7 +114,6 @@ public class TypeAndScopeHeuristicTests {
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.TypeAndScopePriority,
                 Value = "perf",
             }
         );
@@ -177,7 +176,6 @@ public class TypeAndScopeHeuristicTests {
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.TypeAndScopePriority,
                 Value = "ci",
             }
         );
@@ -240,7 +238,6 @@ public class TypeAndScopeHeuristicTests {
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.TypeAndScopePriority,
                 Value = "docs",
             }
         );
@@ -303,7 +300,6 @@ public class TypeAndScopeHeuristicTests {
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.TypeAndScopePriority,
                 Value = "test",
             }
         );
@@ -366,7 +362,6 @@ public class TypeAndScopeHeuristicTests {
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.TypeAndScopePriority,
                 Value = "chore",
             }
         );
