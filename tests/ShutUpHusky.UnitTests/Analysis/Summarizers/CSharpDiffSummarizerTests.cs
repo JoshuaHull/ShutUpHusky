@@ -48,13 +48,10 @@ public class CSharpDiffSummarizerTests
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.LanguageSpecificPriority,
                 Value = "replaced secondReplacedLine new SomeObject 11 with unrelatedArray new[] 1, 2, 3",
                 Shortened = new() {
-                    Priority = Constants.LanguageSpecificPriority,
                     Value = "replaced wow with wew",
                     Shortened = new() {
-                        Priority = Constants.LanguageSpecificPriority,
                         Value = "added string wowStatement = wowow",
                     },
                 },
@@ -101,20 +98,15 @@ public class CSharpDiffSummarizerTests
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.LanguageSpecificPriority,
                 Value = "added var trimmed = snippet Trim",
                 Shortened = new() {
-                    Priority = Constants.LanguageSpecificPriority,
                     Value = "added AddSnippet string snippet",
                     Shortened = new() {
-                        Priority = Constants.LanguageSpecificPriority,
                         Value = "added class CommitMessage",
                         Shortened =
                         new() {
-                            Priority = Constants.LanguageSpecificPriority,
                             Value = "added string Value",
                             Shortened = new() {
-                                Priority = Constants.LanguageSpecificPriority,
                                 Value = "added double Evaluate",
                             },
                         },

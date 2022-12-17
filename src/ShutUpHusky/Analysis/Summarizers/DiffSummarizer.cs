@@ -34,14 +34,12 @@ internal class DiffSummarizer {
         foreach (var line in lowestScoringLinesFirst) {
             if (rtn is null) {
                 rtn = new() {
-                    Priority = Constants.LanguageSpecificPriority,
                     Value = line.ToString(),
                 };
                 continue;
             }
 
             rtn = new() {
-                Priority = Constants.LanguageSpecificPriority,
                 Value = line.ToString(),
                 Shortened = rtn,
             };
