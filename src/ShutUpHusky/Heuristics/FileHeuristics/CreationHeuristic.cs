@@ -21,7 +21,7 @@ internal class CreationHeuristic : IFileHeuristic {
 
                 if (summary is null)
                     return new HeuristicResult {
-                        Priority = Constants.LowPriority + patch.LinesAdded,
+                        Priority = 1 + patch.LinesAdded,
                         Value = fileChangeSnippet,
                     };
 
@@ -30,7 +30,7 @@ internal class CreationHeuristic : IFileHeuristic {
                 return HeuristicResult.AddShortened(
                     prefixedSummary,
                     new() {
-                        Priority = Constants.LowPriority + patch.LinesAdded,
+                        Priority = 1 + patch.LinesAdded,
                         Value = fileChangeSnippet,
                     }
                 );
