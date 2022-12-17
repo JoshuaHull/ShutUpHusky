@@ -35,7 +35,6 @@ internal class SubjectHeuristic : IRepoHeuristic {
         return new() {
             Priority = Constants.SubjectPriority,
             Value = mostCommonTerm.Key,
-            After = " > ",
         };
     }
 }

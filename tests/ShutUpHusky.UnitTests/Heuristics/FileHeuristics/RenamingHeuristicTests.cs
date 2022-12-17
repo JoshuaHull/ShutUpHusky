@@ -92,7 +92,6 @@ public class RenamingHeuristicTests
             new() {
                 Priority = 1,
                 Value = "renamed single-renamed-file",
-                After = ", ",
             },
         });
     }
@@ -211,17 +210,14 @@ public class RenamingHeuristicTests
             new() {
                 Priority = 101,
                 Value = "renamed large-renamed-file",
-                After = ", ",
             },
             new() {
                 Priority = 51,
                 Value = "renamed medium-renamed-file",
-                After = ", ",
             },
             new() {
                 Priority = 11,
                 Value = "renamed small-renamed-file",
-                After = ", ",
             },
         }).And.BeInDescendingOrder(h => h.Priority);
     }
@@ -268,12 +264,10 @@ public class RenamingHeuristicTests
             new() {
                 Priority = 1,
                 Value = "moved moved-file",
-                After = ", ",
             },
             new() {
                 Priority = 101,
                 Value = "renamed renamed-file",
-                After = ", ",
             },
         }).And.BeInDescendingOrder(h => h.Priority);
     }
@@ -396,22 +390,18 @@ public class RenamingHeuristicTests
             new() {
                 Priority = 101,
                 Value = "moved large-moved-file",
-                After = ", ",
             },
             new() {
                 Priority = 51,
                 Value = "moved medium-moved-file",
-                After = ", ",
             },
             new() {
                 Priority = 11,
                 Value = "moved modified-and-moved-file",
-                After = ", ",
             },
             new() {
                 Priority = 11,
                 Value = "renamed simply-renamed-file",
-                After = ", ",
             },
         }).And.BeInDescendingOrder(h => h.Priority);
     }

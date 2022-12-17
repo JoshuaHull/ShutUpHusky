@@ -16,7 +16,6 @@ internal class TypeAndScopeHeuristic : IRepoHeuristic {
         return new() {
             Priority = Constants.TypeAndScopePriority,
             Value = typeAndScope,
-            After = ": ",
         };
     }
 

@@ -23,7 +23,6 @@ internal class CreationHeuristic : IFileHeuristic {
                     return new HeuristicResult {
                         Priority = Constants.LowPriority + patch.LinesAdded,
                         Value = fileChangeSnippet,
-                        After = ", ",
                     };
 
                 var prefixedSummary = HeuristicResult.PrefixAll(summary, $"{fileChangeSnippet} - ");
@@ -33,7 +32,6 @@ internal class CreationHeuristic : IFileHeuristic {
                     new() {
                         Priority = Constants.LowPriority + patch.LinesAdded,
                         Value = fileChangeSnippet,
-                        After = ", ",
                     }
                 );
             })

@@ -68,7 +68,6 @@ public class CreationHeuristicTests
             new() {
                 Priority = 1,
                 Value = "created single-created-file",
-                After = ", ",
             },
         });
     }
@@ -143,17 +142,14 @@ public class CreationHeuristicTests
             new() {
                 Priority = 101,
                 Value = "created large-created-file",
-                After = ", ",
             },
             new() {
                 Priority = 76,
                 Value = "created medium-created-file",
-                After = ", ",
             },
             new() {
                 Priority = 51,
                 Value = "created small-created-file",
-                After = ", ",
             },
         }).And.BeInDescendingOrder(h => h.Priority);
     }

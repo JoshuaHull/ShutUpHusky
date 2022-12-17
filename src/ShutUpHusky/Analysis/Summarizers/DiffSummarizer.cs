@@ -36,7 +36,6 @@ internal class DiffSummarizer {
                 rtn = new() {
                     Priority = Constants.LanguageSpecificPriority,
                     Value = line.ToString(),
-                    After = ", ",
                 };
                 continue;
             }
@@ -44,7 +43,6 @@ internal class DiffSummarizer {
             rtn = new() {
                 Priority = Constants.LanguageSpecificPriority,
                 Value = line.ToString(),
-                After = ", ",
                 Shortened = rtn,
             };
         }

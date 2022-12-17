@@ -48,15 +48,12 @@ public class CSharpDiffSummarizerTests
             new HeuristicResult {
                 Priority = Constants.LanguageSpecificPriority,
                 Value = "replaced secondReplacedLine new SomeObject 11 with unrelatedArray new[] 1, 2, 3",
-                After = ", ",
                 Shortened = new() {
                     Priority = Constants.LanguageSpecificPriority,
                     Value = "replaced wow with wew",
-                    After = ", ",
                     Shortened = new() {
                         Priority = Constants.LanguageSpecificPriority,
                         Value = "added string wowStatement = wowow",
-                        After = ", ",
                     },
                 },
             }
@@ -102,24 +99,19 @@ public class CSharpDiffSummarizerTests
             new HeuristicResult {
                 Priority = Constants.LanguageSpecificPriority,
                 Value = "added var trimmed = snippet Trim",
-                After = ", ",
                 Shortened = new() {
                     Priority = Constants.LanguageSpecificPriority,
                     Value = "added AddSnippet string snippet",
-                    After = ", ",
                     Shortened = new() {
                         Priority = Constants.LanguageSpecificPriority,
                         Value = "added class CommitMessage",
-                        After = ", ",
                         Shortened =
                         new() {
                             Priority = Constants.LanguageSpecificPriority,
                             Value = "added string Value",
-                            After = ", ",
                             Shortened = new() {
                                 Priority = Constants.LanguageSpecificPriority,
                                 Value = "added double Evaluate",
-                                After = ", ",
                             },
                         },
                     },

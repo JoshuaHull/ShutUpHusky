@@ -68,7 +68,6 @@ public class ModificationHeuristicTests
             new() {
                 Priority = 1,
                 Value = "updated single-changed-file",
-                After = ", ",
             },
         });
     }
@@ -143,17 +142,14 @@ public class ModificationHeuristicTests
             new() {
                 Priority = 111,
                 Value = "updated most-changed-file",
-                After = ", ",
             },
             new() {
                 Priority = 101,
                 Value = "updated mildly-changed-file",
-                After = ", ",
             },
             new() {
                 Priority = 61,
                 Value = "updated least-changed-file",
-                After = ", ",
             },
         }).And.BeInDescendingOrder(h => h.Priority);
     }

@@ -116,7 +116,6 @@ public class TypeAndScopeHeuristicTests {
             new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "perf",
-                After = ": ",
             }
         );
     }
@@ -180,7 +179,6 @@ public class TypeAndScopeHeuristicTests {
             new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "ci",
-                After = ": ",
             }
         );
     }
@@ -244,7 +242,6 @@ public class TypeAndScopeHeuristicTests {
             new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "docs",
-                After = ": ",
             }
         );
     }
@@ -308,7 +305,6 @@ public class TypeAndScopeHeuristicTests {
             new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "test",
-                After = ": ",
             }
         );
     }
@@ -372,7 +368,6 @@ public class TypeAndScopeHeuristicTests {
             new HeuristicResult {
                 Priority = Constants.TypeAndScopePriority,
                 Value = "chore",
-                After = ": ",
             }
         );
     }
