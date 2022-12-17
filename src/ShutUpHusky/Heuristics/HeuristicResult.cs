@@ -4,9 +4,21 @@ internal record HeuristicResult {
     public required double Priority { get; init; }
     public required string Value { get; init; } = string.Empty;
     public string? After { get; init; } = null;
+    public HeuristicResult? Shortened { get; init; }
 
     public static HeuristicResult Default => new() {
         Priority = Constants.NotAPriority,
         Value = string.Empty,
     };
+
+    public static HeuristicResult AddShortened(HeuristicResult parent, HeuristicResult shortened) =>
+        parent with {
+            Shortened = parent.Shortened is null ? shortened : AddShortened(parent.Shortened, shortened),
+        };
+
+    public static HeuristicResult PrefixAll(HeuristicResult parent, string prefix) =>
+        parent with {
+            Value = $"{prefix}{parent.Value}",
+            Shortened = parent.Shortened is null ? null : PrefixAll(parent.Shortened, prefix),
+        };
 }
