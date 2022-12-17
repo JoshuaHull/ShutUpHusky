@@ -86,7 +86,11 @@ public class CommitMessageAssembler {
         var canAddSnippetToBody = !canAddSnippetToTitle && _options.EnableBody;
 
         if (!canAddSnippetToTitle && h.LowerPriorityResult is not null) {
-            var hsWithLowerPriorityResult = hs.Append(h.LowerPriorityResult).OrderByDescending(r => r.Priority).ToArray();
+            var hsWithLowerPriorityResult = hs
+                .Append(h.LowerPriorityResult)
+                .OrderByDescending(r => r.Priority)
+                .ToArray();
+
             return ApplyHeuristics(commitMessage, repo, hsWithLowerPriorityResult);
         }
 
