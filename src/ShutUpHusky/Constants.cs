@@ -1,12 +1,4 @@
 internal static class Constants {
-    public const int TypeAndScopePriority = 100;
-    public const int SubjectPriority = 90;
-    public const int HigherPriorty = 15;
-    public const int HighPriorty = 10;
-    public const int MediumPriorty = 5;
-    public const int LanguageSpecificPriority = 3;
-    public const int LowPriority = 1;
-    public const int NotAPriority = 0;
     public const int MaxCommitTitleLength = 72;
     public const double TypeOverrideThreshold = 0.5;
     public const string MatchTicket = "[a-zA-Z]+\\-[0-9]+";
