@@ -19,25 +19,25 @@ internal class TypeAndScopeHeuristic : IRepoHeuristic {
     }
 
     private string? GetType(IRepository repo) {
-        var allAlteredFiles = repo.GetAllAlteredFiles().ToList();
-        var deletedFiles = allAlteredFiles.GetDeletedFiles().ToList();
+        var allAlteredFiles = repo.GetAllAlteredFiles().ToArray();
+        var deletedFiles = allAlteredFiles.Where(file => (file.State & FileStatus.DeletedFromIndex) == FileStatus.DeletedFromIndex).ToArray();
 
-        if (deletedFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
+        if (deletedFiles.Length / ((double)allAlteredFiles.Length) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Perf;
 
-        var ciFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Yaml).ToList();
+        var ciFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Yaml).ToArray();
 
-        if (ciFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
+        if (ciFiles.Length / ((double)allAlteredFiles.Length) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Ci;
 
-        var docsFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Md).ToList();
+        var docsFiles = allAlteredFiles.WithFileExtensions(Constants.FileExtensions.Md).ToArray();
 
-        if (docsFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
+        if (docsFiles.Length / ((double)allAlteredFiles.Length) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Docs;
 
-        var testFiles = allAlteredFiles.WithFileTerms(Constants.Terms.AllTestTerms).ToList();
+        var testFiles = allAlteredFiles.WithFileTerms(Constants.Terms.AllTestTerms).ToArray();
 
-        if (testFiles.Count / ((double)allAlteredFiles.Count) >= Constants.TypeOverrideThreshold)
+        if (testFiles.Length / ((double)allAlteredFiles.Length) >= Constants.TypeOverrideThreshold)
             return Constants.Types.Test;
 
         var typeMatch = Regex.Match(

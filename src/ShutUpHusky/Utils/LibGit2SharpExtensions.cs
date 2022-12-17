@@ -71,10 +71,4 @@ internal static class LibGit2SharpExtensions {
         entries
             .ToFileTerms()
             .Where(term => terms.Contains(term));
-
-    public static IEnumerable<StatusEntry> GetFiles(this IEnumerable<StatusEntry> entries, params FileStatus[] statuses) =>
-        entries.Where(entry => statuses.Contains(entry.State));
-
-    public static IEnumerable<StatusEntry> GetDeletedFiles(this IEnumerable<StatusEntry> entries) =>
-        entries.GetFiles(FileStatus.DeletedFromIndex);
 }
