@@ -42,10 +42,11 @@ internal static class LibGit2SharpExtensions {
         status
             .Where(file => statuses.Any(status => (file.State & status) == status));
 
-    /* IEnumerable<StatusEntry> Extensions */
+    /* IEnumerable<StatusEntry> extensions */
 
     public static IEnumerable<StatusEntry> WithFileExtensions(this IEnumerable<StatusEntry> entries, params string[] extensions) =>
-        entries.Where(entry => extensions.Contains(entry.GetFileExtension().ToLowerInvariant()));
+        entries
+            .Where(entry => extensions.Contains(entry.GetFileExtension().ToLowerInvariant()));
 
     public static IEnumerable<string> ToFileTerms(this IEnumerable<StatusEntry> entries) =>
         entries
