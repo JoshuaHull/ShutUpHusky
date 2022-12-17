@@ -61,7 +61,7 @@ command.SetHandler((noWindow, inProcess, enableBody, name, email, repoLocation, 
 
     var commitMessage = new CommitMessageAssembler(new() {
         EnableBody = enableBody,
-        EnableExperimentalHeuristics = experimental,
+        EnableSummaries = experimental,
     }).Assemble(repo);
 
     Console.WriteLine("ShutUpHusky! Committing with message:");

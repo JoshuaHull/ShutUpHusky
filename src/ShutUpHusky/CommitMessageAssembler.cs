@@ -14,13 +14,38 @@ public class CommitMessageAssembler {
     }
 
     public string Assemble(IRepository repo) {
+        var options = new FileHeuristicOptions {
+            IncludeDiffSummary = _options.EnableSummaries,
+        };
+
         var heuristicResults = new HeuristicResult[][] {
-            new HeuristicResult[] { new TypeAndScopeHeuristic().Analyse(repo) },
-            new HeuristicResult[] { new SubjectHeuristic().Analyse(repo) },
-            new CreationHeuristic().Analyse(repo),
-            new DeletionHeuristic().Analyse(repo),
-            new ModificationHeuristic().Analyse(repo),
-            new RenamingHeuristic().Analyse(repo),
+            new HeuristicResult[] {
+                new TypeAndScopeHeuristic().Analyse(repo),
+            },
+
+            new HeuristicResult[] {
+                new SubjectHeuristic().Analyse(repo),
+            },
+
+            new CreationHeuristic {
+                Options = options,
+            }
+            .Analyse(repo),
+
+            new DeletionHeuristic {
+                Options = options,
+            }
+            .Analyse(repo),
+
+            new ModificationHeuristic {
+                Options = options,
+            }
+            .Analyse(repo),
+
+            new RenamingHeuristic {
+                Options = options,
+            }
+            .Analyse(repo),
         };
 
         return ApplyHeuristics(new PendingCommitMessage(), repo, heuristicResults)
@@ -38,13 +63,19 @@ public class CommitMessageAssembler {
 
         var (h, hs) = (r[0], r[1..]);
 
-        var canAddSnippetToTitle = commitMessage.CanAddSnippetToTitle(h.Value);
-        var canAddSnippetToBody = !canAddSnippetToTitle && _options.EnableBody;
-
         var nextHeuristics = rs.Append(hs).ToArray();
 
         if (h.Priority == Constants.NotAPriority)
             return ApplyHeuristics(commitMessage, repo, nextHeuristics);
+
+        var canAddSnippetToTitle = commitMessage.CanAddSnippetToTitle(h.Value);
+        var canAddSnippetToBody = !canAddSnippetToTitle && _options.EnableBody;
+
+        if (!canAddSnippetToTitle && h.Shortened is not null) {
+            var hsWithShortened = hs.Append(h.Shortened).OrderByDescending(r => r.Priority).ToArray();
+            var nextHeuristicsWithShortened = rs.Append(hsWithShortened).ToArray();
+            return ApplyHeuristics(commitMessage, repo, nextHeuristicsWithShortened);
+        }
 
         if (canAddSnippetToTitle)
             return ApplyHeuristics(commitMessage.AddMessageSnippetToTitle(h.Value).WithNextSeparator(h.After ?? string.Empty), repo, nextHeuristics);
