@@ -106,7 +106,7 @@ public class CommitMessageAssembler {
     private class PendingCommitMessage {
         private readonly StringBuilder _titleBuilder;
         private readonly StringBuilder _bodyBuilder;
-        private bool HasAddedToTitle = false;
+        private bool HasAddedToTitle;
         private string NextSeparator = string.Empty;
 
         public PendingCommitMessage(string initialTitle) {
