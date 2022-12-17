@@ -53,8 +53,6 @@ If you've mostly been changing md files:
 
 You can scroll through this repo's commits for other examples. All but the first were written by this tool.
 
-Commits prefixed with `feat(rand-1234):` are from a previous version, later versions do not generate random scopes.
-
 ## Experimental
 
 To enable experimental features:
@@ -62,8 +60,8 @@ To enable experimental features:
 `dotnet run -- --repo C:\Users\You\SomeRepo\ --experimental true`
 
 The current experimental features are:
-* CSharpHeuristic.cs
-* TypescriptHeuristic.cs
+* CSharpDiffSummarizer.cs
+* TypescriptDiffSummarizer.cs
 
 ShutUpHusky will attempt to understand your typescript and csharp code, and write a more useful commit message
 corresponding to what you've changed. This feature is by no means perfect and sometimes results in strange commit
