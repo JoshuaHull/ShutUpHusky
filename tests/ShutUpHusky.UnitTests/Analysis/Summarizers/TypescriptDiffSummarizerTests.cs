@@ -48,13 +48,10 @@ public class TypescriptDiffSummarizerTests
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.LanguageSpecificPriority,
                 Value = "replaced secondReplacedLine value 11 with unrelatedConstant [1, 2, 3]",
                 Shortened = new() {
-                    Priority = Constants.LanguageSpecificPriority,
                     Value = "replaced wow with wew",
                     Shortened = new() {
-                        Priority = Constants.LanguageSpecificPriority,
                         Value = "added const wowStatement = wowow",
                     },
                 },
@@ -101,19 +98,14 @@ public class TypescriptDiffSummarizerTests
         // Assert
         result.Should().BeEquivalentTo(
             new HeuristicResult {
-                Priority = Constants.LanguageSpecificPriority,
                 Value = "added evaluate => double = => value length / 3 00",
                 Shortened = new() {
-                    Priority = Constants.LanguageSpecificPriority,
                     Value = "added addSnippet snippet string",
                     Shortened = new() {
-                        Priority = Constants.LanguageSpecificPriority,
                         Value = "added value string",
                         Shortened = new() {
-                            Priority = Constants.LanguageSpecificPriority,
                             Value = "added const trimmed = snippet trim",
                             Shortened = new() {
-                                Priority = Constants.LanguageSpecificPriority,
                                 Value = "added class CommitMessage implements ICommitMessage",
                             },
                         },
