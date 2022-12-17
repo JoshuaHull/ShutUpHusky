@@ -14,7 +14,7 @@ internal static class LibGit2SharpExtensions {
     public static IEnumerable<StatusEntry> GetAllAlteredFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
-            .GetAllAlteredFiles();
+            .GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
 
     public static IEnumerable<StatusEntry> GetCreatedFiles(this IRepository repo) =>
         repo
@@ -42,10 +42,7 @@ internal static class LibGit2SharpExtensions {
         status
             .Where(file => statuses.Any(status => (file.State & status) == status));
 
-    public static IEnumerable<StatusEntry> GetAllAlteredFiles(this RepositoryStatus status) =>
-        status.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
-
-    /* List<StatusEntry> Extensions */
+    /* IEnumerable<StatusEntry> Extensions */
 
     public static IEnumerable<StatusEntry> WithFileExtensions(this IEnumerable<StatusEntry> entries, params string[] extensions) =>
         entries.Where(entry => extensions.Contains(entry.GetFileExtension().ToLowerInvariant()));
