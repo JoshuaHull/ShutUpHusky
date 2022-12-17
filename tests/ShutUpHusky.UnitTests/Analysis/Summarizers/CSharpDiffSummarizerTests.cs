@@ -44,23 +44,23 @@ public class CSharpDiffSummarizerTests
             .Summarize(modifiedCSharpFile.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new HeuristicResult[] {
-            new() {
+        result.Should().BeEquivalentTo(
+            new HeuristicResult {
                 Priority = Constants.LanguageSpecificPriority,
                 Value = "replaced secondReplacedLine new SomeObject 11 with unrelatedArray new[] 1, 2, 3",
                 After = ", ",
-            },
-            new() {
-                Priority = Constants.LanguageSpecificPriority,
-                Value = "replaced wow with wew",
-                After = ", ",
-            },
-            new() {
-                Priority = Constants.LanguageSpecificPriority,
-                Value = "added string wowStatement = wowow",
-                After = ", ",
-            },
-        }).And.BeInDescendingOrder(r => r.Priority);
+                Shortened = new() {
+                    Priority = Constants.LanguageSpecificPriority,
+                    Value = "replaced wow with wew",
+                    After = ", ",
+                    Shortened = new() {
+                        Priority = Constants.LanguageSpecificPriority,
+                        Value = "added string wowStatement = wowow",
+                        After = ", ",
+                    },
+                },
+            }
+        );
     }
 
     [Test]
@@ -98,33 +98,34 @@ public class CSharpDiffSummarizerTests
             .Summarize(newCSharpFile.Object);
 
         // Assert
-        result.Should().BeEquivalentTo(new HeuristicResult[] {
-            new() {
+        result.Should().BeEquivalentTo(
+            new HeuristicResult {
                 Priority = Constants.LanguageSpecificPriority,
                 Value = "added var trimmed = snippet Trim",
                 After = ", ",
-            },
-            new() {
-                Priority = Constants.LanguageSpecificPriority,
-                Value = "added AddSnippet string snippet",
-                After = ", ",
-            },
-            new() {
-                Priority = Constants.LanguageSpecificPriority,
-                Value = "added class CommitMessage",
-                After = ", ",
-            },
-            new() {
-                Priority = Constants.LanguageSpecificPriority,
-                Value = "added string Value",
-                After = ", ",
-            },
-            new() {
-                Priority = Constants.LanguageSpecificPriority,
-                Value = "added double Evaluate",
-                After = ", ",
-            },
-        }).And.BeInDescendingOrder(r => r.Priority);
+                Shortened = new() {
+                    Priority = Constants.LanguageSpecificPriority,
+                    Value = "added AddSnippet string snippet",
+                    After = ", ",
+                    Shortened = new() {
+                        Priority = Constants.LanguageSpecificPriority,
+                        Value = "added class CommitMessage",
+                        After = ", ",
+                        Shortened =
+                        new() {
+                            Priority = Constants.LanguageSpecificPriority,
+                            Value = "added string Value",
+                            After = ", ",
+                            Shortened = new() {
+                                Priority = Constants.LanguageSpecificPriority,
+                                Value = "added double Evaluate",
+                                After = ", ",
+                            },
+                        },
+                    },
+                },
+            }
+        );
     }
 
     [TestCase(
@@ -268,6 +269,6 @@ public class CSharpDiffSummarizerTests
             .Summarize(newCSharpFile.Object);
 
         // Assert
-        return result.First().Value;
+        return result.Value;
     }
 }
