@@ -34,7 +34,7 @@ internal static class LibGit2SharpExtensions {
     public static IEnumerable<StatusEntry> GetRenamedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
-            .GetRenamedFiles();
+            .GetFiles(FileStatus.RenamedInIndex);
 
     /* RepositoryStatus extensions */
 
@@ -44,9 +44,6 @@ internal static class LibGit2SharpExtensions {
 
     public static IEnumerable<StatusEntry> GetAllAlteredFiles(this RepositoryStatus status) =>
         status.GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
-
-    public static IEnumerable<StatusEntry> GetRenamedFiles(this RepositoryStatus status) =>
-        status.GetFiles(FileStatus.RenamedInIndex);
 
     /* List<StatusEntry> Extensions */
 
