@@ -39,7 +39,7 @@ internal class DiffSummarizer {
                 continue;
             }
 
-            rtn = HeuristicResult.AddLowerPriorityResult(
+            rtn = HeuristicResult.WithLowerPriorityResult(
                 rtn,
                 new HeuristicResult {
                     Value = line.ToString(),
