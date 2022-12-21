@@ -1,4 +1,5 @@
 using LibGit2Sharp;
+using ShutUpHusky.Files;
 using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics.RepoHeuristics;

@@ -47,9 +47,4 @@ internal static class LibGit2SharpExtensions {
     public static IEnumerable<StatusEntry> WithFileExtensions(this IEnumerable<StatusEntry> entries, params string[] extensions) =>
         entries
             .Where(entry => extensions.Contains(entry.GetFileExtension().ToLowerInvariant()));
-
-    public static IEnumerable<string> ToFileTerms(this IEnumerable<StatusEntry> entries) =>
-        entries
-            .Select(entry => entry.GetFileName().CamelCaseToKebabCase())
-            .SelectMany(n => n.Split("-"));
 }

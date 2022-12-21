@@ -1,5 +1,4 @@
 using LibGit2Sharp;
-using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Files;
 
