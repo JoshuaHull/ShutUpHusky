@@ -8,9 +8,4 @@ internal static class LibGit2SharpExtensions {
         repo
             .RetrieveStatus(new StatusOptions())
             .GetFiles(FileStatus.DeletedFromIndex);
-
-    public static IEnumerable<StatusEntry> GetRenamedFiles(this IRepository repo) =>
-        repo
-            .RetrieveStatus(new StatusOptions())
-            .GetFiles(FileStatus.RenamedInIndex);
 }
