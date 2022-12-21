@@ -10,9 +10,9 @@ internal record HeuristicResult {
             LowerPriorityResult = parent.LowerPriorityResult is null ? lowerPriorityResult : AddLowerPriorityResult(parent.LowerPriorityResult, lowerPriorityResult),
         };
 
-    public static HeuristicResult PrefixAll(HeuristicResult parent, string prefix) =>
+    public static HeuristicResult WithAllPrefixed(HeuristicResult parent, string prefix) =>
         parent with {
             Value = $"{prefix}{parent.Value}",
-            LowerPriorityResult = parent.LowerPriorityResult is null ? null : PrefixAll(parent.LowerPriorityResult, prefix),
+            LowerPriorityResult = parent.LowerPriorityResult is null ? null : WithAllPrefixed(parent.LowerPriorityResult, prefix),
         };
 }

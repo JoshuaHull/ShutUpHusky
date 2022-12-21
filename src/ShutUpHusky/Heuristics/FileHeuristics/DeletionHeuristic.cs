@@ -25,7 +25,7 @@ internal class DeletionHeuristic : IFileHeuristic {
                         Value = fileChangeSnippet,
                     };
 
-                var prefixedSummary = HeuristicResult.PrefixAll(summary, $"{fileChangeSnippet} - ");
+                var prefixedSummary = HeuristicResult.WithAllPrefixed(summary, $"{fileChangeSnippet} - ");
 
                 return HeuristicResult.AddLowerPriorityResult(
                     prefixedSummary,
