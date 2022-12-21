@@ -4,11 +4,6 @@ using ShutUpHusky.Files;
 namespace ShutUpHusky.Utils;
 
 internal static class LibGit2SharpExtensions {
-    public static IEnumerable<StatusEntry> GetAllAlteredFiles(this IRepository repo) =>
-        repo
-            .RetrieveStatus(new StatusOptions())
-            .GetFiles(FileStatus.ModifiedInIndex, FileStatus.NewInIndex, FileStatus.DeletedFromIndex, FileStatus.RenamedInIndex);
-
     public static IEnumerable<StatusEntry> GetCreatedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
