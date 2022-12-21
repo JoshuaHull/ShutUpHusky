@@ -1,7 +1,6 @@
 using LibGit2Sharp;
 using ShutUpHusky.Analysis.Summarizers;
 using ShutUpHusky.Files;
-using ShutUpHusky.Utils;
 
 namespace ShutUpHusky.Heuristics.FileHeuristics;
 
