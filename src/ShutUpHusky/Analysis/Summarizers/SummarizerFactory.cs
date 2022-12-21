@@ -44,10 +44,6 @@ internal static class SummarizerFactory {
                     """,
             };
 
-        return null;
-
-#pragma warning disable CS0162
-        // todo: general summarizer
         return new DiffSummarizer {
             TokenScoreboardIgnoredTokens = new[] {
                 "const", "interface", "class", "var", "function", "let", "break", "continue",
@@ -63,6 +59,5 @@ internal static class SummarizerFactory {
                 [\\\.\(\)\s'";:{}]|\bpublic\b|\bprivate\b|\bget\b|\bset\b|\bthis\b|\babstract\b|\bbase\b|\bvoid\b
                 """,
         };
-#pragma warning restore CS0162
     }
 }
