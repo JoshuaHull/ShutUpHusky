@@ -1,9 +1,8 @@
 using LibGit2Sharp;
-using ShutUpHusky.Files;
 
-namespace ShutUpHusky.Utils;
+namespace ShutUpHusky.Files;
 
-internal static class LibGit2SharpExtensions {
+internal static class GetDeletedFilesFunctions {
     public static IEnumerable<StatusEntry> GetDeletedFiles(this IRepository repo) =>
         repo
             .RetrieveStatus(new StatusOptions())
