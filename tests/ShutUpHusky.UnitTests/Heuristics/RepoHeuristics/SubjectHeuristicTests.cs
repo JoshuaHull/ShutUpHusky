@@ -1,3 +1,4 @@
+using FluentAssertions;
 using LibGit2Sharp;
 using LibGit2Sharp.Mocks;
 using NUnit.Framework;
@@ -44,5 +45,18 @@ public class SubjectHeuristicTests
 
         // Assert
         return result?.Value;
+    }
+
+    [Test]
+    public void ShouldReturnNullSubject_WhenThereAreNoStagedFiles() {
+        // Arrange
+        var repo = new MockRepository()
+            .WithSensibleDefaults();
+
+        // Act
+        var result = Heuristic.Analyse(repo.Object);
+
+        // Assert
+        result.Should().BeNull();
     }
 }

@@ -14,9 +14,6 @@ internal class SubjectHeuristic : IRepoHeuristic {
     public HeuristicResult? Analyse(IRepository repo) {
         var stagedFiles = repo.GetAllAlteredFiles().ToList();
 
-        if (stagedFiles.Count == 0)
-            return null;
-
         var fileTerms = stagedFiles
             .ToFileTerms()
             .Where(term => !ExcludedTerms.Contains(term));
@@ -27,9 +24,9 @@ internal class SubjectHeuristic : IRepoHeuristic {
 
         var mostCommonTerm = fileTermsByCount
             .OrderByDescending(k => k.Value)
-            .First();
+            .FirstOrDefault();
 
-        if (mostCommonTerm.Value == 1)
+        if (mostCommonTerm.Value <= 1)
             return null;
 
         return new() {
