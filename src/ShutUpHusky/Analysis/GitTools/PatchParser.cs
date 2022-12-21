@@ -16,8 +16,7 @@ internal class PatchParser {
 
         var diffLines = lines[4..];
 
-        var i = 0;
-        do {
+        for (int i = 0; i < diffLines.Length; i += 1) {
             var line = NormalizeLine(diffLines[i]);
             var nextLine = i + 1 >= diffLines.Length
                 ? null
@@ -54,7 +53,7 @@ internal class PatchParser {
                     PreviousContent = line[1..],
                 };
             }
-        } while ((i += 1) < diffLines.Length);
+        }
     }
 
     private string NormalizeLine(string line) =>
